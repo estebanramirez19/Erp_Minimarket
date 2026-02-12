@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'CSS/clientes.css' %}">
+
+<div class="container">
+    <h1 class="titulo">Gestión de clientes</h1>
+    <div class="top-bar">
+        <input type="text" placeholder="Buscar cliente..." class="input-search">
+        <a href="{% url 'cliente:crear_cliente' %}" class="btn btn-success">Agregar cliente</a>
+    </div>
+    <div class="table-responsive-lg">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Dirección</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col">Activo</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente.nombre }}</td>
+                    <td>{{ cliente.email }}</td>
+                    <td>{{ cliente.direccion }}</td>
+                    <td>{{ cliente.telefono }}</td>
+                    <td>
+                        {% if cliente.activo %}
+                            <span class="text-success">Sí</span>
+                        {% else %}
+                            <span class="text-danger">No</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'cliente:editar_cliente' cliente.id %}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{% url 'cliente:eliminar_cliente' cliente.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No hay clientes registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

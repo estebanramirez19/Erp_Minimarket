@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block contenido %}
+<div class="compras-list">
+    <!-- ENCABEZADO -->
+    <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+            <h1 class="mb-0">
+                <i class="bi bi-cart3"></i> Compras Registradas
+            </h1>
+            <small class="text-secondary">Gestión centralizada de compras</small>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'compras:crear_compra' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle"></i> Nueva Compra
+            </a>
+        </div>
+    </div>
+
+    {% if compras %}
+        <!-- VISTA DE TARJETAS (Responsive) -->
+        <div class="row" id="compras-container">
+            {% for compra in compras %}
+            <div class="col-md-6 col-lg-12 mb-3">
+                <div class="compra-card">
+                    <!-- Encabezado de tarjeta -->
+                    <div class="compra-header">
+                        <div class="flex-grow-1">
+                            <div class="compra-folio">
+                                <i class="bi bi-file-earmark-text"></i> Folio: {{ compra.folio|default:"—" }}
+                            </div>
+                            <div class="compra-proveedor">
+                                <i class="bi bi-building"></i> {{ compra.proveedor.nombre }}
+                            </div>
+                            <div class="compra-fecha">
+                                <i class="bi bi-calendar-event"></i> {{ compra.fecha|date:"d/m/Y H:i" }}
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="compra-estado {% if compra.estado %}{{ compra.estado|lower }}{% else %}pendiente{% endif %}">
+                                <i class="bi bi-check-circle"></i> {% if compra.estado %}{{ compra.estado }}{% else %}Pendiente{% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Información de la compra -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <small class="text-secondary d-block">Usuario</small>
+                            <strong>{{ compra.usuario.username }}</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-secondary d-block">Tipo de Doc.</small>
+                            <strong>{{ compra.tipo_documento }}</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-secondary d-block">Documentos</small>
+                            {% if compra.pdf %}
+                                <a href="{{ compra.pdf.url }}" class="btn btn-sm btn-outline-primary" download>
+                                    <i class="bi bi-file-pdf"></i> PDF
+                                </a>
+                            {% else %}
+                                <small class="text-muted">—</small>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-secondary d-block">Detalles</small>
+                            <strong>{{ compra.detallecompra_set.count }} artículos</strong>
+                        </div>
+                    </div>
+
+                    <!-- Totales -->
+                    <div class="compra-totales">
+                        <div class="compra-total-item">
+                            <div class="compra-total-label">Subtotal</div>
+                            <div class="compra-total-value">${{ compra.subtotal|floatformat:0 }}</div>
+                        </div>
+                        <div class="compra-total-item">
+                            <div class="compra-total-label">IVA (19%)</div>
+                            <div class="compra-total-value text-warning">${{ compra.iva|floatformat:0 }}</div>
+                        </div>
+                        <div class="compra-total-item" style="background: rgba(13, 110, 253, 0.1); border-left: 4px solid var(--color-primary);">
+                            <div class="compra-total-label">Total</div>
+                            <div class="compra-total-value text-primary">${{ compra.total|floatformat:0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="mt-3 d-flex gap-2 justify-content-end">
+                        <a href="{% url 'compras:detalle_compra' compra.id %}" class="btn btn-sm btn-outline-info" title="Ver detalles">
+                            <i class="bi bi-eye"></i> Ver
+                        </a>
+                        <a href="{% url 'compras:editar_compra' compra.id %}" class="btn btn-sm btn-outline-warning" title="Editar compra">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <a href="{% url 'compras:eliminar_compra' compra.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Deseas eliminar esta compra?');" title="Eliminar compra">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- MENSAJE SIN COMPRAS -->
+        <div class="text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: var(--text-secondary); opacity: 0.5;"></i>
+            <h3 class="mt-3 text-secondary">No hay compras registradas</h3>
+            <p class="text-secondary mb-4">Comienza creando una nueva compra</p>
+            <a href="{% url 'compras:crear_compra' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle"></i> Crear Primera Compra
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .flex-grow-1 {
+        flex-grow: 1;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Detalle de Caja</h2>
+<p>Saldo Inicial: {{ object.saldo_inicial }}</p>
+<p>Saldo Actual: {{ object.saldo_actual }}</p>
+<p>Cuenta Bancaria: {{ object.cuenta_bancaria }}</p>
+<p>Saldo Bancario: {{ object.saldo_bancario }}</p>
+<p>Estado: {{ object.estado }}</p>
+<a href="{% url 'sistemacaja_update' object.pk %}">Editar</a> |
+<a href="{% url 'sistemacaja_delete' object.pk %}">Eliminar</a> |
+<a href="{% url 'sistemacaja_list' %}">Volver a la lista</a>
+{% endblock %}

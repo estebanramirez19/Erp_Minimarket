@@ -1,0 +1,323 @@
+/* ===========================
+   ESTILOS ESPECÍFICOS - COMPRAS
+   =========================== */
+
+/* Página de lista de compras */
+.compras-list {
+    background-color: var(--bg-primary);
+}
+
+.compra-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.compra-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.compra-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.compra-folio {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.compra-fecha {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.compra-proveedor {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 0.5rem;
+}
+
+.compra-totales {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.compra-total-item {
+    background-color: var(--bg-secondary);
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    text-align: center;
+}
+
+.compra-total-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+
+.compra-total-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.compra-estado {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.compra-estado.pendiente {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.compra-estado.completada {
+    background-color: rgba(25, 135, 84, 0.15);
+    color: #198754;
+}
+
+.compra-estado.cancelada {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+
+/* Formulario de agregar detalles */
+.form-agregar-detalle {
+    background-color: var(--bg-secondary);
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.form-agregar-detalle .row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.form-agregar-detalle .col-auto {
+    flex-shrink: 0;
+}
+
+/* Tabla de detalles mejorada */
+.tabla-detalles {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-detalles thead {
+    background-color: var(--header-bg);
+}
+
+.tabla-detalles thead th {
+    padding: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-color);
+    text-align: left;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+.tabla-detalles tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+
+.tabla-detalles tbody tr:hover {
+    background-color: var(--hover-bg);
+}
+
+.tabla-detalles tbody td {
+    padding: 1rem;
+    color: var(--text-primary);
+}
+
+.tabla-detalles .producto-nombre {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.tabla-detalles .cantidad {
+    text-align: center;
+    font-weight: 600;
+}
+
+.tabla-detalles .precio {
+    text-align: right;
+    font-family: 'Courier New', monospace;
+}
+
+.tabla-detalles .acciones {
+    text-align: center;
+}
+
+/* Resumen de totales */
+.resumen-totales {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.total-row:last-child {
+    border-bottom: 2px solid var(--color-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    padding: 1rem 0;
+    margin-top: 0.5rem;
+}
+
+.total-label {
+    font-weight: 600;
+}
+
+.total-valor {
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+}
+
+/* Autocompletado */
+.autocomplete-container {
+    position: relative;
+}
+
+.autocomplete-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 0.375rem 0.375rem;
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.autocomplete-suggestions.hidden {
+    display: none;
+}
+
+.suggestion-item {
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.suggestion-item:hover,
+.suggestion-item.active {
+    background-color: var(--hover-bg);
+    color: var(--color-primary);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+/* Info de producto en sugerencias */
+.suggestion-nombre {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.suggestion-codigo {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.suggestion-precio {
+    font-size: 0.9rem;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* Alertas mejoradas */
+.alerta-success {
+    background-color: rgba(25, 135, 84, 0.1);
+    border-left: 4px solid var(--color-success);
+    color: var(--color-success);
+    padding: 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+}
+
+.alerta-error {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left: 4px solid var(--color-danger);
+    color: var(--color-danger);
+    padding: 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+}
+
+.alerta-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid var(--color-warning);
+    color: #ffc107;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .compra-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .compra-totales {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .tabla-detalles thead th,
+    .tabla-detalles tbody td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .form-agregar-detalle .row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .form-agregar-detalle .col-auto {
+        width: 100%;
+    }
+}

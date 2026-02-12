@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Cajas</h2>
+<a href="{% url 'sistemacaja_create' %}">Nueva Caja</a>
+<ul>
+  {% for caja in object_list %}
+  <li>
+    <a href="{% url 'sistemacaja_detail' caja.pk %}">Saldo Actual: {{ caja.saldo_actual }} - Estado: {{ caja.estado }}</a>
+  </li>
+  {% empty %}
+  <li>No hay cajas registradas.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

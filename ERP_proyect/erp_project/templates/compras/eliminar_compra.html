@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="container mt-4">
+    <div class="alert alert-danger">
+        <h4>¿Estás seguro de eliminar esta compra?</h4>
+        <p>Proveedor: <strong>{{ compra.proveedor.nombre }}</strong></p>
+        <p>Folio: <strong>{{ compra.folio|default:"-" }}</strong></p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a href="{% url 'compras:lista_compras' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

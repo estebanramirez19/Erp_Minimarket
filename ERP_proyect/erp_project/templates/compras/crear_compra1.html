@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="mb-4">
+    <!-- ENCABEZADO -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0"><i class="bi bi-plus-circle"></i> Registrar Nueva Compra</h1>
+            <small class="text-secondary">Crea una nueva compra agregando productos</small>
+        </div>
+        <a href="{% url 'compras:lista_compras' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data" id="crear-compra-form">
+        {% csrf_token %}
+        
+        <!-- Datos generales -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información de la Compra</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 align-items-center mb-2">
+                    <div class="row g-3 mb-2">
+                        <div class="col-md-2">
+                            <label class="form-label small">Tipo documento</label>
+                            {{ form.tipo_documento }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small">RUT</label>
+                            {{ form.rut }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small">Giro</label>
+                            {{ form.giro }}
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small">Razón Social</label>
+                            {{ form.razon_social }}
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small">Direccion </label>
+                            {{ form.direccion }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small">Folio</label>
+                            {{ form.folio }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small">PDF (opcional)</label>
+                            {{ form.pdf }}
+                        </div>
+                                        <div class="row g-3 mb-2">
+                    <div class="col-md-7">
+                        <label class="form-label small">Dirección</label>
+                        {{ form.direccion }}
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label small">Fecha Compra</label>
+                        {{ form.fecha_compra }}
+                    </div>
+                </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label small">Proveedor</label>
+                        <input list="proveedores-list" id="proveedor-input" name="proveedor_text" class="form-control" placeholder="Escribe o selecciona proveedor">
+                        <datalist id="proveedores-list">
+                            {% for p in proveedores %}
+                                {%if p.nombre in proveedores %}
+                                    <option value="{{ p.nombre }}"></option>
+                                {% endif %}
+                                {% if p.nombre not in proveedores %}
+                                    {% include "proveedor/forms.html" %}
+                                {% endif %}
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Detalles de compra -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="bi bi-list-ul"></i> Agregar Productos</h5>
+        </div>
+        <div class="card-body">
+
+    {{ detalle_formset.management_form }}
+
+    <table class="tabla-detalles table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th class="text-center">Cantidad</th>
+                <th class="text-end">Precio Unitario</th>
+                <th class="text-end">Subtotal</th>
+                <th class="text-center">Eliminar</th>
+            </tr>
+        </thead>
+        <tbody id="detalles-tabla">
+            {% for f in detalle_formset %}
+                <tr class="detalle-row">
+                    <td>{{ f.producto }}</td>
+                    <td class="text-center">{{ f.cantidad }}</td>
+                    <td class="text-end">{{ f.precio_unitario }}</td>
+                    <td class="text-end subtotal-cell">0.00</td>
+                    <td class="text-center">
+                        {{ f.DELETE }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-success" id="add-detalle">
+        <i class="bi bi-plus-lg"></i> Agregar línea
+    </button>
+
+        </div>
+    </div>
+
+                <!-- Tabla de detalles temporales -->
+                <div class="table-responsive">
+                    <table class="tabla-detalles table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Código Proveedor</th>
+                                <th>Código</th>
+                                <th>Producto</th>
+                                <th class="text-center">Cantidad</th>
+                                <th class="text-end">Precio Unitario</th>
+                                <th class="text-end">Subtotal</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detalles-tabla">
+                            <!-- Se llena dinámicamente con JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if not detalles_temp %}
+                <div class="text-center py-4">
+                    <i class="bi bi-inbox" style="font-size: 2.5rem; opacity: 0.3;"></i>
+                    <p class="text-secondary mt-2">No hay productos. Agrega algunos para continuar.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- RESUMEN DE TOTALES cambiarlo por un label -->
+        <div class="resumen-totales mb-4">
+            <div class="total-row">
+                <span class="total-label">Subtotal:</span>
+                <span class="total-valor">$<span id="compra-subtotal">0</span></span>
+            </div>
+            <div class="total-row">
+                <span class="total-label">IVA (19%):</span>
+                <span class="total-valor">$<span id="compra-iva">0</span></span>
+            </div>
+            <div class="total-row">
+                <span class="total-label">Total:</span>
+                <span class="total-valor">$<span id="compra-total">0</span></span>
+            </div>
+        </div>
+
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="d-flex gap-2 justify-content-end">
+            <a href="{% url 'compras:lista_compras' %}" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary btn-lg" name="submit_compra">
+                <i class="bi bi-check-circle"></i> Registrar Compra
+            </button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const addBtn = document.getElementById('add-detalle');
+    const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
+    const tbody = document.getElementById('detalles-tabla');
+
+    addBtn.addEventListener('click', () => {
+        const formCount = parseInt(totalFormsInput.value);
+        // toma una fila cualquiera como plantilla (la primera)
+        const emptyRow = tbody.querySelector('tr.detalle-row');
+        if (!emptyRow) return;
+
+        const newRow = emptyRow.cloneNode(true);
+        newRow.querySelectorAll('input, select').forEach(el => {
+            // actualiza los atributos name/id del formset
+            if (el.name) el.name = el.name.replace(/form-\d+-/, `form-${formCount}-`);
+            if (el.id) el.id = el.id.replace(/form-\d+-/, `form-${formCount}-`);
+            if (el.type === 'number' || el.tagName === 'SELECT') el.value = '';
+        });
+        // reset subtotal
+        const subCell = newRow.querySelector('.subtotal-cell');
+        if (subCell) subCell.textContent = '0.00';
+
+        tbody.appendChild(newRow);
+        totalFormsInput.value = formCount + 1;
+    });
+});
+</script>
+
+{% endblock %}

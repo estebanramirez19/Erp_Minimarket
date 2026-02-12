@@ -1,0 +1,558 @@
+/* ===========================
+   ESTILOS ESPECÍFICOS - VENTAS
+   =========================== */
+
+/* Layout principal de ventas */
+.ventas-container {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 2rem;
+    min-height: calc(100vh - 200px);
+}
+
+.ventas-main {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 2rem;
+}
+
+.ventas-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Panel de resumen */
+.resumen-venta {
+    background: linear-gradient(135deg, var(--header-bg) 0%, var(--bg-secondary) 100%);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.resumen-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.total-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.total-item:last-child {
+    border-bottom: none;
+}
+
+.total-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.total-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    font-family: 'Courier New', monospace;
+    color: var(--text-primary);
+}
+
+.total-item.total-final {
+    background-color: rgba(13, 110, 253, 0.1);
+    padding: 1rem;
+    margin: 0.5rem -1.5rem -1.5rem -1.5rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+    border-left: 4px solid var(--color-primary);
+}
+
+.total-item.total-final .total-value {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+/* Panel de información */
+.info-panel {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.info-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.info-value.empty {
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+/* Sección de ingreso de productos */
+.ingreso-section {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ingreso-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Tabs de ingreso */
+.ingreso-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.ingreso-tab {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    position: relative;
+    bottom: -2px;
+}
+
+.ingreso-tab:hover {
+    color: var(--text-primary);
+}
+
+.ingreso-tab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+/* Contenedor de formas de ingreso */
+.ingreso-content {
+    display: none;
+}
+
+.ingreso-content.active {
+    display: block;
+    animation: slideIn 0.2s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Formulario de ingreso */
+.form-ingreso {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+    align-items: flex-end;
+}
+
+.form-ingreso input,
+.form-ingreso select {
+    width: 100%;
+}
+
+.form-ingreso button {
+    grid-column: span 1;
+}
+
+/* Tabla de productos */
+.tabla-productos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+}
+
+.tabla-productos thead {
+    background-color: var(--header-bg);
+}
+
+.tabla-productos thead th {
+    padding: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-color);
+    text-align: left;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+.tabla-productos tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+
+.tabla-productos tbody tr:hover {
+    background-color: var(--hover-bg);
+}
+
+.tabla-productos tbody td {
+    padding: 1rem;
+    color: var(--text-primary);
+}
+
+.tabla-productos .producto-nombre {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.tabla-productos .cantidad {
+    text-align: center;
+    font-weight: 600;
+}
+
+.tabla-productos .precio {
+    text-align: right;
+    font-family: 'Courier New', monospace;
+}
+
+.tabla-productos .subtotal {
+    text-align: right;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+    color: var(--color-primary);
+}
+
+.tabla-productos .acciones {
+    text-align: center;
+}
+
+/* Estado vacío */
+.estado-vacio {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.estado-vacio-icon {
+    font-size: 4rem;
+    opacity: 0.2;
+    margin-bottom: 1rem;
+}
+
+.estado-vacio-text {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Acciones de venta */
+.acciones-venta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.acciones-venta .btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+}
+
+.btn-finalizar {
+    background-color: var(--color-success);
+    color: white;
+    border: none;
+}
+
+.btn-finalizar:hover {
+    background-color: #157347;
+    color: white;
+}
+
+.btn-cancelar {
+    background-color: var(--color-danger);
+    color: white;
+    border: none;
+}
+
+.btn-cancelar:hover {
+    background-color: #bb2d3b;
+    color: white;
+}
+
+/* Panel de información del cliente */
+.cliente-card {
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.05) 0%, rgba(25, 135, 84, 0.05) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.cliente-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.cliente-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Cámara QR */
+#scanner {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+.scanner-container {
+    background-color: var(--bg-secondary);
+    border: 2px dashed var(--border-color);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+/* Devolucionesk */
+.devolucion-section {
+    background-color: rgba(220, 53, 69, 0.05);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+    border-left: 4px solid var(--color-danger);
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-top: 1.5rem;
+}
+
+.devolucion-title {
+    color: var(--color-danger);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+/* Responsivo */
+@media (max-width: 1024px) {
+    .ventas-container {
+        grid-template-columns: 1fr;
+    }
+
+    .ventas-sidebar {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .ventas-container {
+        gap: 1rem;
+    }
+
+    .ventas-main {
+        padding: 1rem;
+    }
+
+    .ingreso-tabs {
+        flex-wrap: wrap;
+    }
+
+    .ingreso-tab {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .form-ingreso {
+        grid-template-columns: 1fr;
+    }
+
+    .tabla-productos thead th,
+    .tabla-productos tbody td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .acciones-venta {
+        grid-template-columns: 1fr;
+    }
+
+    .tabla-productos {
+        font-size: 0.9rem;
+    }
+}
+
+/* ===========================
+   ESTILOS PARA MODAL DE PAGO
+   =========================== */
+
+.pago-tabs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.pago-tab-btn {
+    border: 2px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    padding: 1.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.pago-tab-btn:hover {
+    background-color: var(--bg-secondary);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.pago-tab-btn.active {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pago-tab-btn i {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.pago-tab-btn small {
+    display: block;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.pago-tab-content {
+    display: none;
+    animation: slideIn 0.3s ease-out;
+}
+
+.pago-tab-content.active {
+    display: block;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilo para el modal */
+.modal-content {
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+}
+
+.modal-header {
+    background-color: var(--header-bg);
+    border-bottom: 2px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.modal-title {
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+
+.btn-close {
+    filter: brightness(0.7);
+}
+
+.modal-body {
+    background-color: var(--card-bg);
+}
+
+.modal-footer {
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+.form-control, .form-select {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.form-label {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.alert {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.alert-info {
+    background-color: rgba(13, 202, 240, 0.1);
+    border-color: rgba(13, 202, 240, 0.3);
+}
+
+.alert-success {
+    background-color: rgba(25, 135, 84, 0.1);
+    border-color: rgba(25, 135, 84, 0.3);
+}
+
+/* Estilo para select de tipo de documento */
+.form-select-sm {
+    font-size: 0.95rem;
+}
+
+#tipoDocumento {
+    background-color: transparent;
+    border: none;
+}
+
+#tipoDocumento:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+

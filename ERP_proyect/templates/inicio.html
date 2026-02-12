@@ -1,0 +1,421 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - ERP{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-5 fw-bold text-primary">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </h1>
+                    <p class="text-muted">Sistema de Gestión ERP</p>
+                </div>
+                <div class="text-end">
+                    <p class="mb-0"><strong>Usuario:</strong> {{ request.user.get_full_name }}</p>
+                    <p class="text-muted small">{{ request.user.email }}</p>
+                </div>
+            </div>
+            <hr class="my-3">
+        </div>
+    </div>
+
+    <!-- Key Metrics Row -->
+    <div class="row mb-4">
+        <!-- Total Ventas -->
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-left-primary shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="card-title text-uppercase text-muted">Ventas Totales</h6>
+                            <h3 class="mb-0 text-primary">${{ ventas_total }}</h3>
+                            <small class="text-muted">{{ total_ventas }} transacciones</small>
+                        </div>
+                        <div class="text-primary" style="font-size: 2.5rem; opacity: 0.15;">
+                            <i class="bi bi-cash-coin"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Compras -->
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-left-danger shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="card-title text-uppercase text-muted">Compras Totales</h6>
+                            <h3 class="mb-0 text-danger">${{ compras_total }}</h3>
+                            <small class="text-muted">{{ total_compras }} transacciones</small>
+                        </div>
+                        <div class="text-danger" style="font-size: 2.5rem; opacity: 0.15;">
+                            <i class="bi bi-bag-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Total -->
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-left-success shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="card-title text-uppercase text-muted">Stock Total</h6>
+                            <h3 class="mb-0 text-success">{{ stock_items }}</h3>
+                            <small class="text-muted">unidades en inventario</small>
+                        </div>
+                        <div class="text-success" style="font-size: 2.5rem; opacity: 0.15;">
+                            <i class="bi bi-boxes"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Productos Stock Bajo -->
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-left-warning shadow-sm {% if productos_stock_bajo > 0 %}bg-light-warning{% endif %}">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="card-title text-uppercase text-muted">Stock Bajo</h6>
+                            <h3 class="mb-0 {% if productos_stock_bajo > 0 %}text-warning{% else %}text-success{% endif %}">{{ productos_stock_bajo }}</h3>
+                            <small class="text-muted">productos con stock &lt; 10</small>
+                        </div>
+                        <div class="{% if productos_stock_bajo > 0 %}text-warning{% else %}text-success{% endif %}" style="font-size: 2.5rem; opacity: 0.15;">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applications Grid -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <h2 class="h4 fw-bold mb-3">
+                <i class="bi bi-grid-3x3-gap"></i> Aplicaciones Principales
+            </h2>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <!-- Inventario -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 app-card app-card-primary">
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="bi bi-box-seam"></i> Inventario
+                        </h5>
+                        <span class="badge bg-white text-primary">{{ total_productos }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Gestiona productos, stock y categorías del inventario.</p>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">
+                            <strong>Productos activos:</strong> {{ total_productos }}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-light border-top-0">
+                    <a href="{% url 'inventario:datos_producto' %}" class="btn btn-sm btn-primary w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ventas -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 app-card app-card-success">
+                <div class="card-header bg-success text-white py-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="bi bi-graph-up"></i> Ventas
+                        </h5>
+                        <span class="badge bg-white text-success">{{ total_ventas }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Registra transacciones de venta y genera reportes.</p>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">
+                            <strong>Total generado:</strong> ${{ ventas_total }}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-light border-top-0">
+                    <a href="{% url 'ventas:lista_ventas' %}" class="btn btn-sm btn-success w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compras -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 app-card app-card-danger">
+                <div class="card-header bg-danger text-white py-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bag-check"></i> Compras
+                        </h5>
+                        <span class="badge bg-white text-danger">{{ total_compras }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Administra órdenes de compra y proveedores.</p>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">
+                            <strong>Total invertido:</strong> ${{ compras_total }}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-light border-top-0">
+                    <a href="{% url 'compras:lista_compras' %}" class="btn btn-sm btn-danger w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clientes -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 app-card app-card-info">
+                <div class="card-header bg-info text-white py-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="bi bi-people"></i> Clientes
+                        </h5>
+                        <span class="badge bg-white text-info">{{ total_clientes }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Gestiona información de clientes y contactos.</p>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">
+                            <strong>Clientes registrados:</strong> {{ total_clientes }}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-light border-top-0">
+                    <a href="{% url 'cliente:clientes' %}" class="btn btn-sm btn-info w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Proveedores -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 app-card app-card-warning">
+                <div class="card-header bg-warning text-dark py-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="bi bi-shop"></i> Proveedores
+                        </h5>
+                        <span class="badge bg-dark text-warning">{{ total_proveedores }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Administra datos de proveedores y negociaciones.</p>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">
+                            <strong>Proveedores activos:</strong> {{ total_proveedores }}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-light border-top-0">
+                    <a href="{% url 'proveedor:proveedores' %}" class="btn btn-sm btn-warning w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reportes -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 app-card app-card-secondary">
+                <div class="card-header bg-secondary text-white py-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="bi bi-file-earmark-pdf"></i> Reportes
+                        </h5>
+                        <span class="badge bg-white text-secondary">+</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Genera reportes y análisis del sistema.</p>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">
+                            <strong>Consultas disponibles:</strong> Ventas, Compras, Inventario
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-light border-top-0">
+                    <a href="{% url 'api-root' %}" class="btn btn-sm btn-secondary w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usuarios -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 app-card app-card-dark">
+                <div class="card-header bg-dark text-white py-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person-gear"></i> Usuarios
+                        </h5>
+                        <span class="badge bg-white text-dark">{{ total_usuarios }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Administra usuarios, roles y permisos del sistema.</p>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">
+                            <strong>Usuarios activos:</strong> {{ total_usuarios }}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-light border-top-0">
+                    <a href="{% url 'usuarios:perfiles' %}" class="btn btn-sm btn-dark w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auditoría -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 app-card app-card-muted">
+                <div class="card-header bg-muted text-white py-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="bi bi-file-text"></i> Auditoría
+                        </h5>
+                        <span class="badge bg-white text-muted">log</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Consulta registros de auditoría y cambios del sistema.</p>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">
+                            <strong>Seguimiento:</strong> Completo de todas las operaciones
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-light border-top-0">
+                    <a href="{% url 'auditoria:auditoria' %}" class="btn btn-sm btn-muted w-100" style="background-color: #6c757d; color: white; text-decoration: none;">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integraciones -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 app-card app-card-purple">
+                <div class="card-header text-white py-3" style="background-color: #6f42c1;">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">
+                            <i class="bi bi-puzzle"></i> Integraciones
+                        </h5>
+                        <span class="badge bg-white" style="color: #6f42c1;">API</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Gestiona integraciones y conexiones externas.</p>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">
+                            <strong>Servicios:</strong> APIs, webhooks, sincronización
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-light border-top-0">
+                    <a href="/integraciones/" class="btn btn-sm w-100" style="background-color: #6f42c1; color: white; text-decoration: none;">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Footer -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light border-0">
+                <div class="card-body text-center py-4">
+                    <h5 class="card-title mb-3">Acciones Rápidas</h5>
+                    <div class="btn-group" role="group" aria-label="Acciones rápidas">
+                        <a href="{% url 'ventas:lista_ventas' %}" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Ver Ventas
+                        </a>
+                        <a href="{% url 'compras:crear_compra' %}" class="btn btn-danger">
+                            <i class="bi bi-plus-circle"></i> Nueva Compra
+                        </a>
+                        <a href="{% url 'inventario:crear_producto' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Nuevo Producto
+                        </a>
+                        <a href="{% url 'cliente:crear_cliente' %}" class="btn btn-info">
+                            <i class="bi bi-plus-circle"></i> Nuevo Cliente
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles for Dashboard -->
+<style>
+    .border-left-primary {
+        border-left: 4px solid #0d6efd !important;
+    }
+    .border-left-danger {
+        border-left: 4px solid #dc3545 !important;
+    }
+    .border-left-success {
+        border-left: 4px solid #198754 !important;
+    }
+    .border-left-warning {
+        border-left: 4px solid #ffc107 !important;
+    }
+    .bg-light-warning {
+        background-color: #fff8e1 !important;
+    }
+    .app-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .app-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+    .app-card .card-header {
+        border-bottom: none;
+        font-weight: 600;
+    }
+    .app-card .card-footer {
+        padding: 1rem;
+    }
+    .app-card .btn {
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    .app-card .btn:hover {
+        transform: scale(1.02);
+    }
+</style>
+{% endblock %}

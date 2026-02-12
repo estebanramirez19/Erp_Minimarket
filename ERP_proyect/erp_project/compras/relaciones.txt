@@ -1,0 +1,9 @@
+compras
+una compra se debe relacionar principalmente con el inventario el cual deberia de crear o incrementar
+la cantidad de productos ademas de influir en la contabilidad generando un registro y restando dinero en
+el flujo de caja. Ademas aplicar de manera interna o externa (existe un API del SII que en 
+muestra todas las empresas)
+por ende al hacer una compra 
+que automaticamente integre los datos del proveedor y los datos de la empresa como solo datos de la factura
+y que posteriormente se ingrese el detalle de los productos donde llamamos al inventario para agregar los
+productos. y que teniendo en cuenta los totales se dirijan a contabilidad 

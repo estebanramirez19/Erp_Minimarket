@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="mb-4">
+    <!-- ENCABEZADO -->
+    <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+            <h1 class="mb-0">
+                <i class="bi bi-receipt"></i> Historial de Ventas
+            </h1>
+            <small class="text-secondary">Consulta el historial de todas tus ventas realizadas</small>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'ventas:crear_venta' %}" class="btn btn-success btn-lg">
+                <i class="bi bi-plus-circle"></i> Nueva Venta
+            </a>
+        </div>
+    </div>
+
+    {% if ventas %}
+        <!-- VISTA DE TARJETAS -->
+        <div class="row" id="ventas-container">
+            {% for venta in ventas %}
+            <div class="col-md-6 col-lg-12 mb-3">
+                <div class="compra-card">
+                    <!-- Encabezado de tarjeta -->
+                    <div class="compra-header">
+                        <div class="flex-grow-1">
+                            <div class="compra-folio">
+                                <i class="bi bi-file-earmark-text"></i> Folio: {{ venta.folio|default:"—" }}
+                            </div>
+                            <div class="compra-proveedor">
+                                <i class="bi bi-person"></i> {{ venta.cliente.nombre|default:"Sin cliente" }}
+                            </div>
+                            <div class="compra-fecha">
+                                <i class="bi bi-calendar-event"></i> {{ venta.fecha|date:"d/m/Y H:i" }}
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle"></i> Completada
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Información de la venta -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <small class="text-secondary d-block">Vendedor</small>
+                            <strong>
+                                {% if venta.vendedor and venta.vendedor.user %}
+                                    {{ venta.vendedor.user.first_name|default:"Sin asignar" }}
+                                {% else %}
+                                    Sin asignar
+                                {% endif %}
+                            </strong>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-secondary d-block">Tipo de Doc.</small>
+                            <strong>{{ venta.tipo_documento }}</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-secondary d-block">Documentos</small>
+                            {% if venta.pdf %}
+                                <a href="{{ venta.pdf.url }}" class="btn btn-sm btn-outline-primary" download>
+                                    <i class="bi bi-file-pdf"></i> PDF
+                                </a>
+                            {% else %}
+                                <small class="text-muted">—</small>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-secondary d-block">Artículos</small>
+                            <strong>{{ venta.detalles.all|length }} producto{{ venta.detalles.all|length|pluralize }}</strong>
+                        </div>
+                    </div>
+
+                    <!-- Totales -->
+                    <div class="compra-totales">
+                        <div class="compra-total-item">
+                            <div class="compra-total-label">Subtotal</div>
+                            <div class="compra-total-value">${{ venta.subtotal|floatformat:0 }}</div>
+                        </div>
+                        <div class="compra-total-item">
+                            <div class="compra-total-label">IVA (19%)</div>
+                            <div class="compra-total-value text-warning">${{ venta.iva|floatformat:0 }}</div>
+                        </div>
+                        <div class="compra-total-item" style="background: rgba(13, 110, 253, 0.1); border-left: 4px solid var(--color-primary);">
+                            <div class="compra-total-label">Total</div>
+                            <div class="compra-total-value text-primary">${{ venta.total|floatformat:0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="mt-3 d-flex gap-2 justify-content-end">
+                        <a href="{% url 'ventas:detalle_venta' venta.id %}" class="btn btn-sm btn-outline-info" title="Ver detalles">
+                            <i class="bi bi-eye"></i> Ver
+                        </a>
+                        <a href="{% url 'ventas:editar_venta' venta.id %}" class="btn btn-sm btn-outline-warning" title="Editar venta">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <form method="post" action="{% url 'ventas:cancelar_venta' venta.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Deseas cancelar esta venta?');" title="Cancelar venta">
+                                <i class="bi bi-trash"></i> Cancelar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- MENSAJE SIN VENTAS -->
+        <div class="text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: var(--text-secondary); opacity: 0.5;"></i>
+            <h3 class="mt-3 text-secondary">No hay ventas registradas</h3>
+            <p class="text-secondary mb-4">Comienza registrando una nueva venta</p>
+            <a href="{% url 'ventas:crear_venta' %}" class="btn btn-success btn-lg">
+                <i class="bi bi-plus-circle"></i> Crear Primera Venta
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .flex-grow-1 {
+        flex-grow: 1;
+    }
+    
+    .badge {
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}

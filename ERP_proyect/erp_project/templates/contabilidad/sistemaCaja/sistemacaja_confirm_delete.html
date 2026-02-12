@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Confirmar eliminación</h2>
+<p>¿Seguro que quieres eliminar la caja con saldo actual {{ object.saldo_actual }}?</p>
+<form method="post">{% csrf_token %}
+  <button type="submit">Sí, eliminar</button>
+</form>
+<a href="{% url 'sistemacaja_detail' object.pk %}">Cancelar</a>
+{% endblock %}

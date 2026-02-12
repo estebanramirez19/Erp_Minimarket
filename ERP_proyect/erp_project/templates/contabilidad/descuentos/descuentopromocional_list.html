@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Descuentos Promocionales</h2>
+<a href="{% url 'descuentopromocional_create' %}">Nuevo Descuento</a>
+<ul>
+  {% for descuento in object_list %}
+  <li>
+    <a href="{% url 'descuentopromocional_detail' descuento.pk %}">{{ descuento.codigo }} - {{ descuento.porcentaje_descuento }}%</a>
+  </li>
+  {% empty %}
+  <li>No hay descuentos promocionales registrados.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %} Editar Cliente {% endblock %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'CSS/clientes.css' %}">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">Editar Cliente</h4>
+                </div>
+                <div class="card-body p-4">
+                    {% include 'cliente/forms_edit.html' %}
+                </div>
+                <div class="card-footer bg-light text-muted">
+                    <small>Los campos marcados con * son obligatorios</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

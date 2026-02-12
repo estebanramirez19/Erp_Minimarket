@@ -1,0 +1,586 @@
+{% extends "base.html" %}
+{% load static %}
+{% block contenido %}
+<div class="mb-4">
+    <!-- ENCABEZADO -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0"><i class="bi bi-cart-check"></i> Punto de Venta</h1>
+            <small class="text-secondary">Registra y gestiona ventas en tiempo real</small>
+        </div>
+        <a href="{% url 'ventas:lista_ventas' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    <div class="ventas-container">
+        <!-- MAIN CONTENT -->
+        <div class="ventas-main">
+
+            <!-- Información de la venta -->
+            <div class="row mb-4 g-3">
+                <div class="col-md-3">
+                    <div class="info-panel">
+                        <div class="info-label"><i class="bi bi-receipt"></i> Folio</div>
+                        <div class="info-value {% if not venta.folio %}empty{% endif %}">
+                            {{ venta.folio|default:"Por asignar" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-panel">
+                        <div class="info-label"><i class="bi bi-person"></i> Vendedor</div>
+                        <div class="info-value {% if not venta.vendedor %}empty{% endif %}">
+                            {% if venta.vendedor and venta.vendedor.user %}
+                                {{ venta.vendedor.user.first_name|default:"Sin asignar" }}
+                            {% else %}
+                                Sin asignar
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-panel">
+                        <div class="info-label"><i class="bi bi-file-text"></i> Tipo Doc.</div>
+                        <select id="tipoDocumento" class="form-select form-select-sm" style="border:none; background:transparent; padding:0; font-weight:600; color:var(--color-primary);">
+                            <option value="Boleta" {% if venta.tipo_documento == 'Boleta' %}selected{% endif %}>Boleta</option>
+                            <option value="Factura" {% if venta.tipo_documento == 'Factura' %}selected{% endif %}>Factura</option>
+                            <option value="Nota de Crédito" {% if venta.tipo_documento == 'Nota de Crédito' %}selected{% endif %}>Nota de Crédito</option>
+                            <option value="Nota de Débito" {% if venta.tipo_documento == 'Nota de Débito' %}selected{% endif %}>Nota de Débito</option>
+                            <option value="Sin Documento" {% if venta.tipo_documento == 'Sin Documento' %}selected{% endif %}>Sin Documento</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-panel">
+                        <div class="info-label"><i class="bi bi-calendar"></i> Fecha</div>
+                        <div class="info-value">{{ venta.fecha|date:"d/m/Y H:i" }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cliente -->
+            {% if venta.cliente %}
+            <div class="cliente-card">
+                <div class="cliente-name"><i class="bi bi-person-circle"></i> {{ venta.cliente.nombre }}</div>
+                <div class="cliente-info">
+                    <small>
+                        {% if venta.cliente.rut %}
+                            <strong>RUT:</strong> {{ venta.cliente.rut }} | 
+                        {% endif %}
+                        {% if venta.cliente.email %}
+                            <strong>Email:</strong> {{ venta.cliente.email }}
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+            {% else %}
+            <div class="info-panel mb-4">
+                <div class="info-label text-muted">
+                    <i class="bi bi-info-circle"></i> Cliente no asignado
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- INGRESO DE PRODUCTOS -->
+            <div class="ingreso-section">
+                <div class="ingreso-title">
+                    <i class="bi bi-plus-circle"></i> Agregar Productos
+                </div>
+
+                <!-- Tabs -->
+                <div class="ingreso-tabs">
+                    <button class="ingreso-tab active" data-tab="teclado">
+                        <i class="bi bi-keyboard"></i> Teclado/Scanner
+                    </button>
+                    <button class="ingreso-tab" data-tab="camara">
+                        <i class="bi bi-camera"></i> Cámara QR
+                    </button>
+                    <button class="ingreso-tab" data-tab="manual">
+                        <i class="bi bi-pencil"></i> Ingreso Manual
+                    </button>
+                </div>
+
+                <!-- TAB: TECLADO -->
+                <div class="ingreso-content active" id="tab-teclado">
+                    <form id="barcodeForm" method="post" action="{% url 'ventas:agregar_producto_codigo' venta.id %}">
+                        {% csrf_token %}
+                        <div class="form-ingreso">
+                            <div>
+                                <label class="form-label small">Código de Barras</label>
+                                <input type="text" name="codigo_barra" id="codigo_barra" class="form-control" placeholder="Escanear..." autocomplete="off" autofocus>
+                            </div>
+                            <div>
+                                <label class="form-label small">Cantidad</label>
+                                <input type="number" name="cantidad" id="cantidad" class="form-control" value="1" min="1">
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-plus-lg"></i> Agregar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- TAB: CÁMARA -->
+                <div class="ingreso-content" id="tab-camara">
+                    <div class="scanner-container">
+                        <button id="startScannerBtn" class="btn btn-primary mb-2" type="button">
+                            <i class="bi bi-camera-video"></i> Iniciar Escáner
+                        </button>
+                        <button id="stopScannerBtn" class="btn btn-secondary mb-2" type="button" style="display:none;">
+                            <i class="bi bi-stop-circle"></i> Detener Escáner
+                        </button>
+                        <div id="scanner"></div>
+                    </div>
+                </div>
+
+                <!-- TAB: MANUAL -->
+                <div class="ingreso-content" id="tab-manual">
+                    <form id="manualForm">
+                        <div class="form-ingreso">
+                            <div>
+                                <label class="form-label small">Nombre Producto</label>
+                                <input type="text" id="nombreProductoInput" class="form-control" placeholder="Buscar producto..." autocomplete="off">
+                            </div>
+                            <div>
+                                <label class="form-label small">Cantidad</label>
+                                <input type="number" id="cantidadManualInput" class="form-control" value="1" min="1">
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-plus-lg"></i> Agregar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TABLA DE PRODUCTOS -->
+            {% if venta.detalles.all %}
+            <div class="table-responsive">
+                <table class="tabla-productos">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th class="cantidad">Cantidad</th>
+                            <th class="precio text-end">Precio Unitario</th>
+                            <th class="subtotal text-end">Subtotal</th>
+                            <th class="acciones">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productos-tbody">
+                        {% for detalle in venta.detalles.all %}
+                        <tr data-detalle-id="{{ detalle.id }}">
+                            <td class="producto-nombre">{{ detalle.producto.nombre }}</td>
+                            <td class="cantidad">{{ detalle.cantidad }}</td>
+                            <td class="precio text-end">${{ detalle.precio_unitario|floatformat:0 }}</td>
+                            <td class="subtotal text-end">${{ detalle.subtotal|floatformat:0 }}</td>
+                            <td class="acciones">
+                                <button type="button" class="btn btn-sm btn-outline-danger btn-quitar" data-detalle-id="{{ detalle.id }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="estado-vacio">
+                <div class="estado-vacio-icon">
+                    <i class="bi bi-inbox"></i>
+                </div>
+                <div class="estado-vacio-text">
+                    <p><strong>Sin productos</strong></p>
+                    <small>Agrega productos para comenzar la venta</small>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ACCIONES -->
+            <div class="acciones-venta">
+                <form method="post" action="{% url 'ventas:cancelar_venta' venta.id %}" style="display:inline; width:100%;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-cancelar w-100" onclick="return confirm('¿Cancelar venta?');">
+                        <i class="bi bi-x-circle"></i> Cancelar Venta
+                    </button>
+                </form>
+                <button type="button" class="btn btn-finalizar w-100" data-bs-toggle="modal" data-bs-target="#modalPago" {% if venta.detalles.all|length == 0 %}disabled{% endif %}>
+                    <i class="bi bi-check-circle"></i> Finalizar Venta
+                </button>
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="ventas-sidebar">
+            <!-- RESUMEN -->
+            <div class="resumen-venta">
+                <div class="resumen-title">
+                    <i class="bi bi-calculator"></i> Resumen de Venta
+                </div>
+                <div class="total-item">
+                    <span class="total-label">Subtotal:</span>
+                    <span class="total-value">$<span id="subtotalAmount">{{ venta.subtotal|floatformat:0 }}</span></span>
+                </div>
+                <div class="total-item">
+                    <span class="total-label">IVA (19%):</span>
+                    <span class="total-value">$<span id="ivaAmount">{{ venta.iva|floatformat:0 }}</span></span>
+                </div>
+                <div class="total-item total-final">
+                    <span class="total-label">Total Venta:</span>
+                    <span class="total-value">$<span id="totalAmount">{{ venta.total|floatformat:0 }}</span></span>
+                </div>
+            </div>
+
+            <!-- APLICAR DESCUENTO -->
+            <div class="info-panel">
+                <div class="info-label">
+                    <i class="bi bi-tag"></i> Descuento
+                </div>
+                <form method="post" action="{% url 'ventas:aplicar_descuento' venta.id %}" style="display:flex; gap:0.5rem;">
+                    {% csrf_token %}
+                    <input type="text" name="codigo_descuento" class="form-control form-control-sm" placeholder="Código o %" style="flex:1;">
+                    <button type="submit" class="btn btn-sm btn-outline-warning">
+                        <i class="bi bi-check"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- INFORMACIÓN DE VENTAS -->
+            <div class="info-panel">
+                <div class="info-label">
+                    <i class="bi bi-info-circle"></i> Cantidad Artículos
+                </div>
+                <div class="info-value" id="cantidad-articulos">
+                    {{ venta.detalles.all|length }}
+                </div>
+            </div>
+
+            <!-- DEVOLUCIONES -->
+            {% if venta.tipo_documento in "Nota de Crédito,Devolución" %}
+            <div class="devolucion-section">
+                <div class="devolucion-title">
+                    <i class="bi bi-arrow-counterclockwise"></i> Esta es una {{ venta.tipo_documento }}
+                </div>
+                {% if venta.venta_original %}
+                <small class="text-muted">
+                    Referencia a venta original: <strong>#{{ venta.venta_original.folio }}</strong>
+                </small>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- ESTADO -->
+            <div class="info-panel" style="background-color: rgba(25, 135, 84, 0.05); border-left: 4px solid var(--color-success);">
+                <div class="info-label">
+                    <i class="bi bi-check-circle"></i> Estado
+                </div>
+                <div class="info-value">
+                    <small>Pendiente de cobro</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Funcionalidad de tabs
+document.querySelectorAll('.ingreso-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        const tabName = this.dataset.tab;
+        
+        // Remover clase active de todos
+        document.querySelectorAll('.ingreso-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.ingreso-content').forEach(c => c.classList.remove('active'));
+        
+        // Añadir clase active
+        this.classList.add('active');
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+        
+        // Focus en input si es teclado
+        if(tabName === 'teclado') {
+            document.getElementById('codigo_barra').focus();
+        } else if(tabName === 'manual') {
+            document.getElementById('nombreProductoInput').focus();
+        }
+    });
+});
+
+// AJAX para quitar productos
+document.addEventListener('click', function(e) {
+    if(e.target && e.target.closest('.btn-quitar')) {
+        const btn = e.target.closest('.btn-quitar');
+        const detalleId = btn.getAttribute('data-detalle-id');
+        const tr = btn.closest('tr');
+        
+        fetch(`/ventas/quitar-producto/${detalleId}/`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        }).then(r => r.json()).then(data => {
+            if(data.success) {
+                tr.remove();
+                document.getElementById('subtotalAmount').textContent = parseFloat(data.totales.subtotal).toFixed(0);
+                document.getElementById('ivaAmount').textContent = parseFloat(data.totales.iva).toFixed(0);
+                document.getElementById('totalAmount').textContent = parseFloat(data.totales.total).toFixed(0);
+                document.getElementById('cantidad-articulos').textContent = document.querySelectorAll('#productos-tbody tr').length;
+                
+                // Si no hay productos, mostrar estado vacío
+                if(document.querySelectorAll('#productos-tbody tr').length === 0) {
+                    location.reload();
+                }
+            }
+        }).catch(e => console.error(e));
+    }
+});
+
+// Limpiar formulario después de submit
+document.getElementById('barcodeForm').addEventListener('submit', function(e) {
+    setTimeout(() => {
+        document.getElementById('codigo_barra').value = '';
+        document.getElementById('codigo_barra').focus();
+        document.getElementById('cantidad').value = '1';
+    }, 200);
+});
+
+// Manual form handler
+document.getElementById('manualForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const nombre = document.getElementById('nombreProductoInput').value.trim();
+    const cantidad = parseInt(document.getElementById('cantidadManualInput').value) || 1;
+    
+    if (!nombre) {
+        alert('Ingrese el nombre del producto');
+        return;
+    }
+    
+    fetch("{% url 'ventas:agregar_producto_manual' venta.id %}", {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: new URLSearchParams({ nombre_producto: nombre, cantidad: cantidad })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(data.error || 'Error al agregar producto');
+        }
+    })
+    .catch(err => { console.error('Error:', err); alert('Error de conexión'); });
+});
+
+// Modal de Pago - Tab switching
+document.querySelectorAll('.pago-tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const metodoPago = this.dataset.metodo;
+        
+        // Remover active de todos
+        document.querySelectorAll('.pago-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.pago-tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Agregar active
+        this.classList.add('active');
+        document.getElementById(`pago-${metodoPago}`).classList.add('active');
+        
+        // Cambiar select
+        document.getElementById('metodo_pago').value = metodoPago;
+    });
+});
+
+// Actualizar monto recibido basado en total
+document.querySelectorAll('input[name^="monto_"], input[name="numero_operacion_"], input[name="numero_tarjeta_"]').forEach(input => {
+    input.addEventListener('input', function() {
+        const metodo = document.getElementById('metodo_pago').value;
+        const total = parseFloat('{{ venta.total }}');
+        
+        if (metodo === 'Efectivo') {
+            const monto = parseFloat(this.value) || 0;
+            const vuelto = monto - total;
+            document.getElementById('vueltoAmount').textContent = (vuelto >= 0 ? vuelto.toFixed(2) : '0.00');
+        }
+    });
+});
+
+// Form de pago submit
+document.getElementById('pagForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const metodo = document.getElementById('metodo_pago').value;
+    const total = parseFloat('{{ venta.total }}');
+    let montoRecibido = 0;
+    
+    if (metodo === 'Efectivo') {
+        montoRecibido = parseFloat(document.getElementById('montoEfectivo').value) || 0;
+        if (montoRecibido < total) {
+            alert('El monto recibido debe ser mayor o igual al total');
+            return;
+        }
+    } else if (metodo === 'Pago Mixto') {
+        const efectivo = parseFloat(document.getElementById('montoEfectMixto').value) || 0;
+        const tarjeta = parseFloat(document.getElementById('montoTarjMixto').value) || 0;
+        const transf = parseFloat(document.getElementById('montoTransfMixto').value) || 0;
+        montoRecibido = efectivo + tarjeta + transf;
+        
+        if (Math.abs(montoRecibido - total) > 0.01) {
+            alert('La suma de montos debe ser igual al total');
+            return;
+        }
+    } else {
+        montoRecibido = total;
+    }
+    
+    // Enviar form
+    this.submit();
+});
+</script>
+
+<!-- MODAL DE PAGO -->
+<div class="modal fade" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPagoLabel">
+                    <i class="bi bi-credit-card"></i> Seleccionar Método de Pago
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="pagForm" method="post" action="{% url 'ventas:finalizar_venta' venta.id %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <!-- Total a pagar -->
+                    <div class="alert alert-info mb-4">
+                        <strong>Total a pagar: ${{ venta.total|floatformat:2 }}</strong>
+                    </div>
+                    
+                    <!-- Selector de tipo de documento (oculto) -->
+                    <input type="hidden" name="tipo_documento" id="tipoDocumentoHidden" value="{{ venta.tipo_documento }}">
+                    
+                    <!-- Tabs de métodos de pago -->
+                    <div class="pago-tabs mb-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem;">
+                        <button type="button" class="pago-tab-btn btn btn-outline-primary active" data-metodo="Efectivo" style="text-align:center;">
+                            <i class="bi bi-cash-coin"></i><br><small>Efectivo</small>
+                        </button>
+                        <button type="button" class="pago-tab-btn btn btn-outline-primary" data-metodo="Tarjeta Débito" style="text-align:center;">
+                            <i class="bi bi-credit-card"></i><br><small>Tarjeta Débito</small>
+                        </button>
+                        <button type="button" class="pago-tab-btn btn btn-outline-primary" data-metodo="Tarjeta Crédito" style="text-align:center;">
+                            <i class="bi bi-credit-card"></i><br><small>Tarjeta Crédito</small>
+                        </button>
+                        <button type="button" class="pago-tab-btn btn btn-outline-primary" data-metodo="Transferencia Bancaria" style="text-align:center;">
+                            <i class="bi bi-bank"></i><br><small>Transferencia</small>
+                        </button>
+                        <button type="button" class="pago-tab-btn btn btn-outline-primary" data-metodo="Pago Mixto" style="text-align:center;">
+                            <i class="bi bi-collection"></i><br><small>Pago Mixto</small>
+                        </button>
+                    </div>
+                    
+                    <!-- Hidden select para método de pago -->
+                    <select id="metodo_pago" name="metodo_pago" style="display:none;">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta Débito">Tarjeta Débito</option>
+                        <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+                        <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                        <option value="Pago Mixto">Pago Mixto</option>
+                    </select>
+                    
+                    <!-- TAB: EFECTIVO -->
+                    <div class="pago-tab-content active" id="pago-Efectivo">
+                        <div class="mb-3">
+                            <label for="montoEfectivo" class="form-label">Monto Recibido</label>
+                            <input type="number" step="0.01" min="0" class="form-control form-control-lg" id="montoEfectivo" name="monto_recibido" placeholder="0.00" required>
+                        </div>
+                        <div class="alert alert-success">
+                            <strong>Vuelto: $<span id="vueltoAmount">0.00</span></strong>
+                        </div>
+                    </div>
+                    
+                    <!-- TAB: TARJETA DÉBITO -->
+                    <div class="pago-tab-content" id="pago-Tarjeta Débito">
+                        <div class="mb-3">
+                            <label for="numeroTarjetaDeb" class="form-label">Últimos 4 Dígitos</label>
+                            <input type="text" class="form-control" id="numeroTarjetaDeb" name="numero_tarjeta_debito" maxlength="4" placeholder="0000">
+                        </div>
+                        <div class="mb-3">
+                            <label for="bancoDeb" class="form-label">Banco</label>
+                            <input type="text" class="form-control" id="bancoDeb" name="banco_debito" placeholder="Nombre del banco">
+                        </div>
+                        <input type="hidden" name="monto_recibido" value="{{ venta.total }}">
+                    </div>
+                    
+                    <!-- TAB: TARJETA CRÉDITO -->
+                    <div class="pago-tab-content" id="pago-Tarjeta Crédito">
+                        <div class="mb-3">
+                            <label for="numeroTarjetaCred" class="form-label">Últimos 4 Dígitos</label>
+                            <input type="text" class="form-control" id="numeroTarjetaCred" name="numero_tarjeta_credito" maxlength="4" placeholder="0000">
+                        </div>
+                        <div class="mb-3">
+                            <label for="bancoCred" class="form-label">Banco</label>
+                            <input type="text" class="form-control" id="bancoCred" name="banco_credito" placeholder="Nombre del banco">
+                        </div>
+                        <input type="hidden" name="monto_recibido" value="{{ venta.total }}">
+                    </div>
+                    
+                    <!-- TAB: TRANSFERENCIA BANCARIA -->
+                    <div class="pago-tab-content" id="pago-Transferencia Bancaria">
+                        <div class="mb-3">
+                            <label for="numeroOp" class="form-label">Número de Operación</label>
+                            <input type="text" class="form-control" id="numeroOp" name="numero_operacion" placeholder="ID de transacción">
+                        </div>
+                        <div class="mb-3">
+                            <label for="bancoOr" class="form-label">Banco Origen</label>
+                            <input type="text" class="form-control" id="bancoOr" name="banco_origen" placeholder="Nombre del banco">
+                        </div>
+                        <input type="hidden" name="monto_recibido" value="{{ venta.total }}">
+                    </div>
+                    
+                    <!-- TAB: PAGO MIXTO -->
+                    <div class="pago-tab-content" id="pago-Pago Mixto">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Monto Efectivo</label>
+                                <input type="number" step="0.01" min="0" class="form-control" id="montoEfectMixto" name="monto_efectivo" placeholder="0.00">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Monto Tarjeta</label>
+                                <input type="number" step="0.01" min="0" class="form-control" id="montoTarjMixto" name="monto_tarjeta" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Monto Transferencia</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="montoTransfMixto" name="monto_transferencia" placeholder="0.00">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nº Tarjeta (últimos 4 dígitos)</label>
+                            <input type="text" class="form-control" name="numero_tarjeta_mixto" maxlength="4" placeholder="0000">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nº Operación Transferencia</label>
+                            <input type="text" class="form-control" name="numero_operacion_mixto" placeholder="ID de transacción">
+                        </div>
+                        <input type="hidden" name="monto_recibido" value="{{ venta.total }}">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-check-circle"></i> Confirmar Pago
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script para actualizar tipo de documento -->
+<script>
+document.getElementById('tipoDocumento').addEventListener('change', function() {
+    document.getElementById('tipoDocumentoHidden').value = this.value;
+});
+</script>
+{% endblock %}

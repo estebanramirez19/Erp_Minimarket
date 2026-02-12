@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "folio": "",
+  "rut": "6007",
+  "razon_social": "",
+  "giro": "",
+  "direccion": "",
+  "fecha_compra": "2 de Dicembre de 2010",
+  "tipo_documento": "Factura",
+  "total": 0,
+  "productos": [
+    {
+      "producto_id": 13,
+      "producto_codigo": "AUTO11",
+      "producto_nombre": "de Salas Cua y Janes nantes Teo\n2 TOA AFECTO Y 78",
+      "cantidad": 150,
+      "precio_unitario": 2800.0
+    }
+  ],
+  "raw_text": [
+    "RUT DE PRUEBA FACTURA ELECTRONCA LTDA. RUT. 6007.00\nImporación y Venta de Repuestos pra Automovles\n\nCaña Mavi. estres 120,01 200, Sartgo FACTURA ELECTRONICA\nSocarsat Av. Pro de Volt 2431, unos\n\nFono (662) 3051118 nrezo,\n\nSIE - SANTIAGO CENTRO\n\nSantiago, 2 de Dicembre de 2010\n\noe) MURIO PEREZ MOOD EL RT A OASTO\nrección: Gran Avenida José gue Carrera SS 300 Comuna Sn Mg\nro: Aceiritracó de Salas Cua y Janes nantes Teo\n2 TOA AFECTO Y 78 150 2800)\n2 me OA 2AFECTO, za Y 9 20 o\n3 MO MMISERVICIODENTO 2 OA\nCua de Despacio Beca 200 OL Fira il de Despacio\noro]\nPorto Neo | 4577597\norto Exento 5570\nMAGO | 070\nMonto Total] $5:461.060\nnur: mom\ncto: pa\n\nCeDIeLe\n\n"
+  ]
+}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'CSS/perfiles.css' %}">
+<h1>Perfiles de Usuario</h1>
+<a href="{% url 'usuarios:crear_perfil' %}" class="btn btn-success">Crear perfil</a>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Teléfono</th>
+            <th>Activo</th>
+            <th>Fecha Creacion</th>
+            <th>Fecha Actualizacion</th>
+            <th>Ultima Conexion</th>
+            <th>Foto de perfil</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for perfil in perfiles %}
+        <tr>
+            <td>{{ perfil.user.username }}</td>
+            <td>{{ perfil.rol }}</td>
+            <td>{{ perfil.telefono }}</td>
+            <td>{{ perfil.activo }}</td>
+            <td>{{ perfil.fecha_creacion }}</td>
+            <td>{{ perfil.fecha_modificacion }}</td>
+            <td>{{ perfil.ultima_conexion }}</td>
+            <td>{{ perfil.foto_perfil }}</td>
+            <td>
+                <a href="{% url 'usuarios:editar_perfil' perfil.id %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'usuarios:eliminar_perfil' perfil.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No hay perfiles registrados.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

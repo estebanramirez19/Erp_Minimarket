@@ -1,0 +1,107 @@
+/* === DISEÑO FUTURISTA NEÓN === */
+
+body {
+    background: #0d0d0f;
+    font-family: "Orbitron", sans-serif;
+    color: #e5e7eb;
+}
+
+/* Título */
+.titulo {
+    text-align: center;
+    margin: 30px 0;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    color: #00eaff;
+    letter-spacing: 4px;
+    text-shadow: 0 0 15px #00eaff;
+}
+
+/* Barra superior */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 20px;
+    background: rgba(30, 30, 40, 0.7);
+    border: 1px solid #00eaff;
+    box-shadow: 0 0 15px #00eaff;
+    border-radius: 10px;
+}
+
+/* Input búsqueda */
+.input-search {
+    width: 60%;
+    padding: 12px;
+    background: rgba(15, 15, 25, 0.8);
+    border: 1px solid #00eaff;
+    color: #00eaff;
+    border-radius: 8px;
+    outline: none;
+    text-shadow: 0 0 5px #00eaff;
+}
+.input-search::placeholder {
+    color: #007a8c;
+}
+
+/* Botón agregar */
+.btn-agregar {
+    padding: 12px 20px;
+    background: #00eaff;
+    color: black;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 0 12px #00eaff;
+    transition: 0.3s;
+}
+.btn-agregar:hover {
+    background: #00fff2;
+    box-shadow: 0 0 20px #00fff2;
+}
+
+/* Tabla futurista */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(20, 20, 30, 0.7);
+    backdrop-filter: blur(8px);
+}
+
+.table thead {
+    background: rgba(0, 255, 255, 0.15);
+}
+.table th, .table td {
+    padding: 15px;
+    border-bottom: 1px solid #00eaff;
+    text-align: center;
+}
+
+.table tbody tr:hover {
+    background: rgba(0, 238, 255, 0.10);
+    transition: 0.3s;
+}
+
+/* Botones de acciones */
+.acciones .btn {
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+    border: 1px solid #00eaff;
+    color: #00eaff;
+    transition: 0.3s;
+}
+.acciones .btn:hover {
+    color: black;
+    background: #00eaff;
+    box-shadow: 0 0 12px #00eaff;
+}
+
+/* Botón eliminar (rojo futurista) */
+.acciones .eliminar:hover {
+    background: #ff0044;
+    border-color: #ff0044;
+    box-shadow: 0 0 12px #ff0044;
+}

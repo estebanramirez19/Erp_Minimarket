@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'CSS/empresa.css' %}">
+
+<div class="container">
+    <h1 class="titulo">Gestión De Empresa</h1>
+    <div class="top-bar">
+        <input type="text" placeholder="Buscar empresa..." class="input-search">
+        <a href="{% url 'empresa:crear_empresa' %}" class="btn btn-success">Agregar empresa</a>
+    </div>
+    <div class="table-responsive-lg">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Representante Legal</th>
+                    <th scope="col">Logo</th>
+                    <th scope="col">Razon Social</th>
+                    <th scope="col">Rut</th>
+                    <th scope="col">Giro</th>
+                    <th scope="col">Direccion</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Comuna</th>
+                    <th scope="col">Ciudad</th>
+                    <th scope="col">Region</th>
+                    <th scope="col">Telefono</th>
+                    <th scope="col">Fecha De Fundacion</th>
+                    <th scope="col">Numero De Empleados</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in empresas %}
+                <tr>
+                    <td>{{ e.representante_legal }}</td>
+                    <td>{{ e.logo }}</td>
+                    <td>{{ e.razon_social }}</td>
+                    <td>{{ e.rut }}</td>
+                    <td>{{ e.giro }}</td>
+                    <td>{{ e.direccion }}</td>
+                    <td>{{ e.email }}</td>
+                    <td>{{ e.comuna }}</td>
+                    <td>{{ e.ciudad }}</td>
+                    <td>{{ e.region }}</td>
+                    <td>{{ e.fecha_fundacion }}</td>
+                    <td>{{ e.numero_empleados }}</td>
+                    <td class="acciones">
+                        <a href="{% url 'empresa:editar_empresa' e.id %}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{% url 'empresa:eliminar_empresa' e.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7">No hay empresas registradas .</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

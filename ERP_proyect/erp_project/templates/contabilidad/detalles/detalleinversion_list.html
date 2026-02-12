@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Detalles de Inversión</h2>
+<a href="{% url 'detalleinversion_create' %}">Nuevo Detalle</a>
+<ul>
+  {% for detalle in object_list %}
+  <li>
+    <a href="{% url 'detalleinversion_detail' detalle.pk %}">{{ detalle.tipo_movimiento }}: {{ detalle.monto }}</a>
+  </li>
+  {% empty %}
+  <li>No hay movimientos registrados.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

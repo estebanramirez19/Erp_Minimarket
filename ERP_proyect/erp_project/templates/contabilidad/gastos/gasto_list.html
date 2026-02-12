@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Lista de Gastos</h2>
+<a href="{% url 'gasto_create' %}">Crear Nuevo Gasto</a>
+<ul>
+  {% for gasto in object_list %}
+  <li>
+    <a href="{% url 'gasto_detail' gasto.pk %}">{{ gasto.descripcion }} - {{ gasto.monto }}</a>
+  </li>
+  {% empty %}
+  <li>No hay gastos registrados.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

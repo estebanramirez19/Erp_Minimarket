@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>{% if object %}Editar Gasto{% else %}Crear Gasto{% endif %}</h2>
+<form method="post">{% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Guardar</button>
+</form>
+<a href="{% url 'gasto_list' %}">Cancelar</a>
+{% endblock %}

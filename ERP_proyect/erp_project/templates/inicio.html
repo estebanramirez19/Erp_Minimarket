@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Dashboard - ERP{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold text-primary mb-2">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </h1>
+            <p class="text-muted">Sistema de Gestión Empresarial</p>
+            <hr>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card shadow-sm border-left-primary">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h6 class="text-muted text-uppercase">Total Ventas</h6>
+                            <h3 class="text-primary mb-0">${{ ventas_total }}</h3>
+                            <small class="text-muted">{{ total_ventas }} transacciones</small>
+                        </div>
+                        <div class="text-primary ms-auto" style="font-size: 2rem; opacity: 0.2;">
+                            <i class="bi bi-cash-coin"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card shadow-sm border-left-danger">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h6 class="text-muted text-uppercase">Total Compras</h6>
+                            <h3 class="text-danger mb-0">${{ compras_total }}</h3>
+                            <small class="text-muted">{{ total_compras }} transacciones</small>
+                        </div>
+                        <div class="text-danger ms-auto" style="font-size: 2rem; opacity: 0.2;">
+                            <i class="bi bi-bag-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card shadow-sm border-left-success">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h6 class="text-muted text-uppercase">Stock Total</h6>
+                            <h3 class="text-success mb-0">{{ stock_items }}</h3>
+                            <small class="text-muted">unidades en inventario</small>
+                        </div>
+                        <div class="text-success ms-auto" style="font-size: 2rem; opacity: 0.2;">
+                            <i class="bi bi-boxes"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card shadow-sm {% if productos_stock_bajo > 0 %}border-left-warning{% else %}border-left-success{% endif %}">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h6 class="text-muted text-uppercase">Stock Bajo</h6>
+                            <h3 class="mb-0 {% if productos_stock_bajo > 0 %}text-warning{% else %}text-success{% endif %}">{{ productos_stock_bajo }}</h3>
+                            <small class="text-muted">productos &lt; 10 unidades</small>
+                        </div>
+                        <div class="ms-auto" style="font-size: 2rem; opacity: 0.2;" 
+                             {% if productos_stock_bajo > 0 %}class="text-warning ms-auto"{% else %}class="text-success ms-auto"{% endif %}>
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applications Grid -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <h2 class="h4 fw-bold mb-3"><i class="bi bi-grid-3x3-gap"></i> Aplicaciones</h2>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <!-- Inventario -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm app-card">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0 d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-box-seam"></i> Inventario</span>
+                        <span class="badge bg-white text-primary">{{ total_productos }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Gestiona productos, stock y categorías.</p>
+                </div>
+                <div class="card-footer bg-light">
+                    <a href="{% url 'inventario:datos_producto' %}" class="btn btn-sm btn-primary w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ventas -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm app-card">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0 d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-graph-up"></i> Ventas</span>
+                        <span class="badge bg-white text-success">{{ total_ventas }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Registra transacciones de venta.</p>
+                </div>
+                <div class="card-footer bg-light">
+                    <a href="{% url 'ventas:lista_ventas' %}" class="btn btn-sm btn-success w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compras -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm app-card">
+                <div class="card-header bg-danger text-white py-3">
+                    <h5 class="mb-0 d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-bag-check"></i> Compras</span>
+                        <span class="badge bg-white text-danger">{{ total_compras }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Administra órdenes de compra.</p>
+                </div>
+                <div class="card-footer bg-light">
+                    <a href="{% url 'compras:lista_compras' %}" class="btn btn-sm btn-danger w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clientes -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm app-card">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="mb-0 d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-people"></i> Clientes</span>
+                        <span class="badge bg-white text-info">{{ total_clientes }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Gestiona información de clientes.</p>
+                </div>
+                <div class="card-footer bg-light">
+                    <a href="{% url 'cliente:clientes' %}" class="btn btn-sm btn-info w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Proveedores -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm app-card">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h5 class="mb-0 d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-shop"></i> Proveedores</span>
+                        <span class="badge bg-dark text-warning">{{ total_proveedores }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Administra datos de proveedores.</p>
+                </div>
+                <div class="card-footer bg-light">
+                    <a href="{% url 'proveedor:proveedores' %}" class="btn btn-sm btn-warning w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usuarios -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm app-card">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0 d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-person-gear"></i> Usuarios</span>
+                        <span class="badge bg-white text-dark">{{ total_usuarios }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Administra usuarios y permisos.</p>
+                </div>
+                <div class="card-footer bg-light">
+                    <a href="{% url 'usuarios:perfiles' %}" class="btn btn-sm btn-dark w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        
+
+    <!-- Quick Actions -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light border-0">
+                <div class="card-body text-center py-4">
+                    <h5 class="card-title mb-3">Acciones Rápidas</h5>
+                    <div class="btn-group flex-wrap" role="group">
+                        <a href="{% url 'ventas:lista_ventas' %}" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Ver Ventas
+                        </a>
+                        <a href="{% url 'compras:crear_compra' %}" class="btn btn-danger">
+                            <i class="bi bi-plus-circle"></i> Nueva Compra
+                        </a>
+                        <a href="{% url 'inventario:crear_producto' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Nuevo Producto
+                        </a>
+                        <a href="{% url 'cliente:crear_cliente' %}" class="btn btn-info">
+                            <i class="bi bi-plus-circle"></i> Nuevo Cliente
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styles -->
+<style>
+    .border-left-primary { border-left: 4px solid #0d6efd !important; }
+    .border-left-danger { border-left: 4px solid #dc3545 !important; }
+    .border-left-success { border-left: 4px solid #198754 !important; }
+    .border-left-warning { border-left: 4px solid #ffc107 !important; }
+    
+    .app-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .app-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+    .app-card .card-header {
+        border-bottom: none;
+        font-weight: 600;
+    }
+    .app-card .card-footer {
+        padding: 1rem;
+        border-top: none;
+    }
+</style>
+{% endblock %}

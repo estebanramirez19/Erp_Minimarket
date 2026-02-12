@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %} Nosotros {% endblock %}
+
+{% block contenido %}
+
+
+<div class="card">
+    <div class="card-header">Agregar producto</div>
+    <div class="card-body">
+        <h4 class="card-title">Datos del producto</h4>
+        {% include 'inventario/forms.html' %}
+    </div>
+</div>
+
+{% endblock %}

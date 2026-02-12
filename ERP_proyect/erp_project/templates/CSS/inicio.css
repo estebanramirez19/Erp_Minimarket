@@ -1,0 +1,56 @@
+.inicio-container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Carrusel */
+.carrusel-img {
+    height: 420px;
+    object-fit: cover;
+    filter: brightness(0.85);
+}
+
+.carousel-caption h5 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.carousel-caption p {
+    font-size: 1.1rem;
+}
+
+/* Creadores */
+.creadores {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.creadores h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.creadores .nombres {
+    font-size: 1.2rem;
+    color: #444;
+}
+
+/* Alcance */
+.alcance {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.alcance h2 {
+    font-size: 1.9rem;
+    margin-bottom: 15px;
+}
+
+.alcance p {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #555;
+}

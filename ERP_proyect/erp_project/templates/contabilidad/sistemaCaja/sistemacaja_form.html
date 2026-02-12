@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>{% if object %}Editar Caja{% else %}Crear Caja{% endif %}</h2>
+<form method="post">{% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Guardar</button>
+</form>
+<a href="{% url 'sistemacaja_list' %}">Cancelar</a>
+{% endblock %}

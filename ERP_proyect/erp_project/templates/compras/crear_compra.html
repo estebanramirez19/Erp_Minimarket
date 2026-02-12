@@ -1,0 +1,381 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="mb-4">
+    <!-- ENCABEZADO -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0"><i class="bi bi-plus-circle"></i> Registrar Nueva Compra</h1>
+            <small class="text-secondary">Crea una nueva compra agregando productos</small>
+        </div>
+        <a href="{% url 'compras:lista_compras' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data" id="crear-compra-form">
+        {% csrf_token %}
+        
+        <!-- Datos generales -->
+        <div class="card mb-4">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información de la Compra</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 align-items-center mb-2">
+                    <div class="row g-3 mb-2">
+                        <div class="col-md-1">
+                            <label class="form-label small">Folio</label>
+                            {{ form.folio }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small">Tipo documento</label>
+                            {{ form.tipo_documento }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small">RUT</label>
+                            {{ form.rut }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small">Giro</label>
+                            {{ form.giro }}
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small">Razón Social</label>
+                            {{ form.razon_social }}
+                        </div>
+                        <div class="col-md-7">
+                            <label class="form-label small">Direccion </label>
+                            {{ form.direccion }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small">Fecha Compra</label>
+                            {{ form.fecha_compra }}
+                        </div> 
+                        <div class="col-md-4">
+                            <label class="form-label small">PDF (opcional)</label>
+                            {{ form.pdf }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3 align-items-center mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label small">Proveedor</label>
+                        <input list="proveedores-list" id="proveedor-input" name="proveedor_text" class="form-control" placeholder="Escribe o selecciona proveedor">
+                        <datalist id="proveedores-list">
+                        {{ proveedor.nombre}}
+                        </datalist>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small">Giro</label>
+                        <input list="proveedores-giro" id="proveedor-input" name="proveedor_text" class="form-control" placeholder="Escribe o selecciona proveedor">
+                        <datalist id="proveedores-giro">
+                        {{ proveedor.giro}}
+                        </datalist>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">RUT</label>
+                        <input list="proveedores-rut" id="proveedor-input" name="proveedor_text" class="form-control" placeholder="Escribe o selecciona proveedor">
+                        <datalist id="proveedores-rut">
+                        {{ proveedor.rut}}
+                        </datalist>
+                    </div>
+    
+                    <div class="col-md-2">
+                        <label class="form-label small">Contacto</label>
+                        <input list="prov-contacto-list" type="text" class="form-control" id="contacto-input" name="contacto" placeholder="Contacto del proveedor">
+                        <datalist id="prov-contacto-list">
+                        {{ proveedor.contacto}}
+                        </datalist>
+                    
+                    </div>
+    
+                    <div class="col-md-4">
+                        <label class="form-label small">Direccion proveedor</label>
+                        <input list="prov-direccion-list" type="text" class="form-control" id="direccion-proveedor-input" name="direccion_proveedor" placeholder="Direccion del proveedor">
+                        <datalist id="prov-direccion-list">
+                        {{ proveedor.direccion}}
+                        </datalist>
+                    </div>
+    
+                    <div class="col-md-4">
+                        <label class="form-label small">Email</label>
+                        <input list="prov-email-list" type="email" class="form-control" id="email-input" name="email" placeholder="Email del proveedor">
+                        <datalist id="prov-email-list">
+                        {{ proveedor.email}}
+                        </datalist>
+                    </div>
+    
+                    <div class="col-md-2">
+                        <label class="form-label small">Telefono</label>
+                        <input list="prov-telefono-list" type="text" class="form-control" id="telefono-input" name="telefono" placeholder="Telefono del proveedor">
+                        <datalist id="prov-telefono-list">
+                                    {{ proveedor.telefono}}
+                        </datalist>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+        
+        
+      <!-- Detalles de compra -->
+<div class="card mb-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0"><i class="bi bi-list-ul"></i> Agregar Productos</h5>
+    </div>
+    <div class="card-body">
+        {{ detalle_formset.management_form }}
+
+        <table class="tabla-detalles table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-end">Precio Unitario</th>
+                    <th class="text-end">Subtotal</th>
+                    <th class="text-end">IVA</th>
+                    <th class="text-end">Total</th>
+                    <th class="text-center">Eliminar</th>
+                </tr>
+            </thead>
+            <tbody id="detalles-formset-tbody">
+                {% for f in detalle_formset %}
+                    <tr class="detalle-row">
+                        <td>{{ f.producto }}</td>
+                        <td class="text-center">
+                            {{ f.cantidad }}
+                        </td>
+                        <td class="text-end">
+                            {{ f.precio_unitario }}
+                        </td>
+                        <td class="text-end subtotal-cell">0</td>
+                        <td class="text-end iva-cell">0</td>
+                        <td class="text-end total-cell">0</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-danger btn-delete-row">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                            {% if f.DELETE %}
+                                {{ f.DELETE }}  {# checkbox real que Django usará para borrar #}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="button" class="btn btn-success" id="add-detalle">
+            <i class="bi bi-plus-lg"></i> Agregar línea
+        </button>
+    </div>
+</div>
+
+
+                <!-- Tabla de detalles temporales -->
+                <div class="table-responsive">
+                    <table class="tabla-detalles table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Código Proveedor</th>
+                                <th>Código</th>
+                                <th>Producto</th>
+                                <th class="text-center">Cantidad</th>
+                                <th class="text-end">Precio Unitario</th>
+                                <th class="text-end">Subtotal</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detalles-tabla">
+                            <!-- Se llena dinámicamente con JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if not detalles_temp %}
+                <div class="text-center py-4">
+                    <i class="bi bi-inbox" style="font-size: 2.5rem; opacity: 0.3;"></i>
+                    <p class="text-secondary mt-2">No hay productos. Agrega algunos para continuar.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- RESUMEN DE TOTALES cambiarlo por un label -->
+       <div class="resumen-totales mb-4">
+    <div class="total-row">
+        <span class="total-label">Subtotal:</span>
+        <span class="total-valor">$<span id="compra-subtotal">0</span></span>
+    </div>
+    <div class="total-row">
+        <span class="total-label">IVA (19%):</span>
+        <span class="total-valor">$<span id="compra-iva">0</span></span>
+    </div>
+    <div class="total-row">
+        <span class="total-label">Total:</span>
+        <span class="total-valor">$<span id="compra-total">0</span></span>
+    </div>
+</div>
+
+
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="d-flex gap-2 justify-content-end">
+            <a href="{% url 'compras:lista_compras' %}" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary btn-lg" name="submit_compra">
+                <i class="bi bi-check-circle"></i> Registrar Compra
+            </button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const addBtn = document.getElementById('add-detalle');
+    const tbody = document.getElementById('detalles-formset-tbody');
+    const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
+
+    // spans del resumen
+    const resumenSubtotal = document.getElementById('compra-subtotal');
+    const resumenIva = document.getElementById('compra-iva');
+    const resumenTotal = document.getElementById('compra-total');
+
+    // campos reales del form Compra (los que se enviarán a Django)
+    const inputSubtotal = document.getElementById('id_subtotal');
+    const inputIva = document.getElementById('id_iva');
+    const inputTotal = document.getElementById('id_total');
+
+    const IVA_RATE = 0.19;
+
+    // Recalcula subtotal, iva, total de TODA la compra
+    function recalcularTotalesGlobales() {
+        let subtotalGlobal = 0;
+
+        tbody.querySelectorAll('tr.detalle-row').forEach(row => {
+            const subCell = row.querySelector('.subtotal-cell');
+            const sub = parseFloat(subCell?.textContent || 0);
+            subtotalGlobal += sub;
+        });
+
+        const iva = subtotalGlobal * IVA_RATE;
+        const total = subtotalGlobal + iva;
+
+        // actualizar labels
+        resumenSubtotal.textContent = subtotalGlobal.toFixed(2);
+        resumenIva.textContent = iva.toFixed(2);
+        resumenTotal.textContent = total.toFixed(2);
+
+        // actualizar inputs del form
+        if (inputSubtotal) inputSubtotal.value = subtotalGlobal.toFixed(2);
+        if (inputIva) inputIva.value = iva.toFixed(2);
+        if (inputTotal) inputTotal.value = total.toFixed(2);
+    }
+
+    // Recalcula subtotal, iva, total de UNA fila
+    function recalcularFila(row) {
+        const cantidadInput = row.querySelector('input[name$="-cantidad"]');
+        const precioInput = row.querySelector('input[name$="-precio_unitario"]');
+        const subCell = row.querySelector('.subtotal-cell');
+        const ivaCell = row.querySelector('.iva-cell');
+        const totalCell = row.querySelector('.total-cell');
+
+        if (!cantidadInput || !precioInput) return;
+
+        const cant = parseFloat(cantidadInput.value || 0);
+        const precio = parseFloat(precioInput.value || 0);
+
+        const subtotal = cant * precio;
+        const iva = subtotal * IVA_RATE;
+        const total = subtotal + iva;
+
+        if (subCell) subCell.textContent = subtotal.toFixed(2);
+        if (ivaCell) ivaCell.textContent = iva.toFixed(2);
+        if (totalCell) totalCell.textContent = total.toFixed(2);
+    }
+
+    // event delegation para inputs de cantidad y precio
+    tbody.addEventListener('input', (e) => {
+        const row = e.target.closest('.detalle-row');
+        if (!row) return;
+
+        const name = e.target.name || '';
+        if (name.endsWith('-cantidad') || name.endsWith('-precio_unitario')) {
+            recalcularFila(row);
+            recalcularTotalesGlobales();
+        }
+    });
+
+    // agregar nueva fila
+    if (addBtn) {
+        addBtn.addEventListener('click', () => {
+            const formCount = parseInt(totalFormsInput.value);
+            const templateRow = tbody.querySelector('tr.detalle-row');
+            if (!templateRow) return;
+
+            const newRow = templateRow.cloneNode(true);
+
+            newRow.querySelectorAll('input, select').forEach(el => {
+                if (el.name) {
+                    el.name = el.name.replace(/form-\d+-/, `form-${formCount}-`);
+                }
+                if (el.id) {
+                    el.id = el.id.replace(/form-\d+-/, `form-${formCount}-`);
+                }
+
+                // limpia valores para la nueva fila
+                if (el.type === 'number' || el.tagName === 'SELECT' || el.type === 'text') {
+                    el.value = '';
+                }
+                // desmarcar checkbox DELETE si existe
+                if (el.type === 'checkbox') {
+                    el.checked = false;
+                }
+            });
+
+            // reset celdas
+            const subCell = newRow.querySelector('.subtotal-cell');
+            const ivaCell = newRow.querySelector('.iva-cell');
+            const totalCell = newRow.querySelector('.total-cell');
+
+            if (subCell) subCell.textContent = '0';
+            if (ivaCell) ivaCell.textContent = '0';
+            if (totalCell) totalCell.textContent = '0';
+
+            tbody.appendChild(newRow);
+            totalFormsInput.value = formCount + 1;
+        });
+    }
+
+    // eliminar fila (botón rojo) + marcar DELETE si existe
+    tbody.addEventListener('click', (e) => {
+        if (!e.target.closest('.btn-delete-row')) return;
+        const row = e.target.closest('tr.detalle-row');
+        if (!row) return;
+
+        // si existe el checkbox DELETE del formset, lo marcamos y ocultamos la fila
+        const deleteCheckbox = row.querySelector('input[type="checkbox"][name$="-DELETE"]');
+        if (deleteCheckbox) {
+            deleteCheckbox.checked = true;
+            row.style.display = 'none';
+        } else {
+            // si es una fila nueva sin DELETE, simplemente la removemos del DOM
+            row.remove();
+            // opcional: podría ajustarse TOTAL_FORMS, pero Django admite huecos en índices
+        }
+
+        recalcularTotalesGlobales();
+    });
+
+    // cálculo inicial al cargar (por si hay datos precargados)
+    tbody.querySelectorAll('tr.detalle-row').forEach(row => {
+        recalcularFila(row);
+    });
+    recalcularTotalesGlobales();
+});
+</script>
+
+
+{% endblock %}

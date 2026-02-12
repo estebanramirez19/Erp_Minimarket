@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Productos{% endblock %}
+
+{% block contenido %}
+
+
+<div class="productos-container">
+
+    <h1 class="titulo">Gestión de Productos</h1>
+
+    <div class="top-bar">
+        <input type="text" placeholder="Buscar producto..." class="input-search">
+        <a href="{% url 'inventario:crear_producto' %}" class="btn btn-success">Agregar Producto</a>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Categoría</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Imagen</th>
+                <th>Código de Barra</th>
+                <th>Precio Venta</th>
+                <th>Precio Compra</th>
+                <th>Activo</th>
+                <th>Stock</th>
+                <th>Actualización</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in productos_info %}
+            <tr>
+                <td>{{ item.producto.categoria.nombre }}</td>
+                <td>{{ item.producto.nombre }}</td>
+                <td>{{ item.producto.descripcion }}</td>
+
+                <td>
+                    {% if item.producto.imagen %}
+                        <img src="{{ item.producto.imagen.url }}" class="img-prod">
+                    {% else %}
+                        <span class="no-img">Sin imagen</span>
+                    {% endif %}
+                </td>
+
+                <td>{{ item.producto.codigo_barra }}</td>
+                <td>{{ item.producto.precio_venta }}</td>
+                <td>{{ item.producto.precio_compra }}</td>
+
+                <td>
+                    {% if item.producto.activo %}
+                        <span class="activo si">Sí</span>
+                    {% else %}
+                        <span class="activo no">No</span>
+                    {% endif %}
+                </td>
+
+                <td>{{ item.inventario.cantidad|default:"0" }}</td>
+                <td>{{ item.inventario.fecha_actualizacion|date:"d-m-Y H:i"|default:"N/A" }}</td>
+
+                <td class="acciones">
+                    <a href="{% url 'inventario:editar_producto' item.producto.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'inventario:eliminar_producto' item.producto.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

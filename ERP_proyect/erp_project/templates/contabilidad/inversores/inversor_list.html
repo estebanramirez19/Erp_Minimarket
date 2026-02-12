@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Inversores</h2>
+<a href="{% url 'inversor_create' %}">Nuevo Inversor</a>
+<ul>
+  {% for inversor in object_list %}
+  <li>
+    <a href="{% url 'inversor_detail' inversor.pk %}">{{ inversor.nombre }} - Invertido: {{ inversor.monto_invertido }}</a>
+  </li>
+  {% empty %}
+  <li>No hay inversores registrados.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

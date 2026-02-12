@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Detalle de inversión</h2>
+<p>Inversor: {{ object.inversor.nombre }}</p>
+<p>Fecha: {{ object.fecha }}</p>
+<p>Monto: {{ object.monto }}</p>
+<p>Tipo de Pago: {{ object.tipo_pago }}</p>
+<p>Tipo de Movimiento: {{ object.tipo_movimiento }}</p>
+<a href="{% url 'detalleinversion_update' object.pk %}">Editar</a> |
+<a href="{% url 'detalleinversion_delete' object.pk %}">Eliminar</a> |
+<a href="{% url 'detalleinversion_list' %}">Volver a la lista</a>
+{% endblock %}

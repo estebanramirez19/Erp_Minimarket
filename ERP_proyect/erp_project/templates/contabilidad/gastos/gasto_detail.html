@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Detalle del Gasto</h2>
+<p>Descripción: {{ object.descripcion }}</p>
+<p>Monto: {{ object.monto }}</p>
+<p>Fecha: {{ object.fecha }}</p>
+<p>Categoría: {{ object.categoria }}</p>
+<a href="{% url 'gasto_update' object.pk %}">Editar</a> |
+<a href="{% url 'gasto_delete' object.pk %}">Eliminar</a> |
+<a href="{% url 'gasto_list' %}">Volver a la lista</a>
+{% endblock %}

@@ -1,0 +1,110 @@
+/* ===========================
+   INVENTARIO - DARK THEME
+   =========================== */
+
+.inventario-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.inventario-container h1,
+.inventario-container h4 {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* ===========================
+   FORMULARIO PRODUCTOS
+   =========================== */
+
+.form-producto .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.form-producto label {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.form-producto input,
+.form-producto select,
+.form-producto textarea {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 12px;
+    border-radius: 0.4rem;
+    transition: 0.25s ease;
+}
+
+.form-producto input:focus,
+.form-producto select:focus,
+.form-producto textarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.3);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-lg {
+    padding: 12px 24px;
+    border-radius: 0.4rem;
+    font-weight: 600;
+}
+
+/* ===========================
+   CARDS
+   =========================== */
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.6rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.card-header {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-body {
+    padding: 1.2rem;
+}
+
+.card-footer {
+    padding: 0.8rem 1.2rem;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+/* ===========================
+   TABLA IMAGENES
+   =========================== */
+
+table.table img.img-prod {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+
+@media (max-width: 768px) {
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-lg {
+        width: 100%;
+    }
+}

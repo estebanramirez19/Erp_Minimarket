@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block contenido %}
+<div class="mb-4">
+    <!-- ENCABEZADO -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0"><i class="bi bi-file-earmark-text"></i> Detalle de Compra</h1>
+            <small class="text-secondary">Folio: {{ compra.folio|default:"—" }}</small>
+        </div>
+        <a href="{% url 'compras:lista_compras' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    <!-- DATOS GENERALES -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información General</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <small class="text-secondary d-block mb-1">Proveedor</small>
+                    <p class="mb-0 fw-bold">{{ compra.proveedor.nombre }}</p>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-secondary d-block mb-1">Fecha de Compra</small>
+                    <p class="mb-0 fw-bold">{{ compra.fecha|date:"d/m/Y H:i" }}</p>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-secondary d-block mb-1">Usuario</small>
+                    <p class="mb-0 fw-bold">{{ compra.usuario.username }}</p>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-secondary d-block mb-1">Tipo de Documento</small>
+                    <p class="mb-0 fw-bold">{{ compra.tipo_documento }}</p>
+                </div>
+            </div>
+            {% if compra.pdf %}
+            <div class="mt-3">
+                <a href="{{ compra.pdf.url }}" class="btn btn-sm btn-danger" download>
+                    <i class="bi bi-file-pdf"></i> Descargar PDF
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- DETALLES DE COMPRA -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="bi bi-list-ul"></i> Detalles de Compra</h5>
+        </div>
+        <div class="card-body">
+            <!-- Formulario para agregar detalles -->
+            <form id="form-agregar-detalle" class="form-agregar-detalle mb-4">
+                {% csrf_token %}
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                        <input type="text" id="producto-codigo-input" class="form-control" placeholder="Código / barcode">
+                    </div>
+                    <div class="col-md-4 position-relative autocomplete-container">
+                        <input type="text" id="producto-autocomplete" class="form-control" placeholder="Buscar por nombre o código..." autocomplete="off">
+                        <input type="hidden" name="producto_id" id="producto-id-hidden">
+                        <div id="producto-suggestions" class="autocomplete-suggestions hidden"></div>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" name="cantidad" id="cantidad-input" class="form-control" min="1" value="1" placeholder="Cantidad">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" name="precio_unitario" id="precio-input" class="form-control" step="0.01" min="0" placeholder="Precio">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Tabla de detalles -->
+            {% if detalles %}
+            <div class="table-responsive">
+                <table class="tabla-detalles">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th class="cantidad">Cantidad</th>
+                            <th class="precio text-end">Precio Unitario</th>
+                            <th class="precio text-end">Total Línea</th>
+                            <th class="acciones">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detalles-tbody">
+                        {% for detalle in detalles %}
+                        <tr data-detalle-id="{{ detalle.id }}">
+                            <td class="producto-nombre">{{ detalle.producto.nombre }}</td>
+                            <td class="cantidad">{{ detalle.cantidad }}</td>
+                            <td class="precio text-end">${{ detalle.precio_unitario|floatformat:0 }}</td>
+                            <td class="precio text-end">${{ detalle.cantidad|mul:detalle.precio_unitario|floatformat:0 }}</td>
+                            <td class="acciones">
+                                <button type="button" class="btn btn-sm btn-outline-danger btn-quitar-detalle" data-detalle-id="{{ detalle.id }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+                <i class="bi bi-inbox" style="font-size: 2.5rem; opacity: 0.3;"></i>
+                <p class="text-secondary mt-2">No hay productos registrados en esta compra.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- RESUMEN DE TOTALES -->
+    <div class="resumen-totales">
+        <div class="total-row">
+            <span class="total-label">Subtotal:</span>
+            <span class="total-valor">$<span id="compra-subtotal">{{ compra.subtotal|floatformat:0 }}</span></span>
+        </div>
+        <div class="total-row">
+            <span class="total-label">IVA (19%):</span>
+            <span class="total-valor">$<span id="compra-iva">{{ compra.iva|floatformat:0 }}</span></span>
+        </div>
+        <div class="total-row">
+            <span class="total-label">Total:</span>
+            <span class="total-valor">$<span id="compra-total">{{ compra.total|floatformat:0 }}</span></span>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function getCsrf() {
+    const cookieValue = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+    return cookieValue ? cookieValue.split('=')[1] : '';
+}
+
+function mul(a, b) {
+    return parseFloat(a) * parseFloat(b);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+    const form = document.getElementById('form-agregar-detalle');
+    const tbody = document.getElementById('detalles-tbody');
+
+    form.addEventListener('submit', function(e){
+        e.preventDefault();
+        const producto_id = document.getElementById('producto-id-hidden').value;
+        const producto_codigo = document.getElementById('producto-codigo-input').value;
+        const producto_nombre = document.getElementById('producto-autocomplete').value;
+        const cantidad = document.getElementById('cantidad-input').value;
+        const precio_unitario = document.getElementById('precio-input').value;
+
+        fetch(`{% url 'compras:agregar_detalle_manual' compra.id %}`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCsrf(),
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({producto_id, producto_codigo, producto_nombre, cantidad, precio_unitario})
+        }).then(r => r.json()).then(data => {
+            if(data.success){
+                const d = data.detalle;
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-detalle-id', d.id);
+                tr.innerHTML = `
+                    <td class="producto-nombre">${d.producto_nombre}</td>
+                    <td class="cantidad">${d.cantidad}</td>
+                    <td class="precio text-end">$${parseFloat(d.precio_unitario).toFixed(0)}</td>
+                    <td class="precio text-end">$${parseFloat(d.subtotal_linea).toFixed(0)}</td>
+                    <td class="acciones">
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-quitar-detalle" data-detalle-id="${d.id}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+                // actualizar totales
+                document.getElementById('compra-subtotal').textContent = parseFloat(data.totales.subtotal).toFixed(0);
+                document.getElementById('compra-iva').textContent = parseFloat(data.totales.iva).toFixed(0);
+                document.getElementById('compra-total').textContent = parseFloat(data.totales.total).toFixed(0);
+                // limpiar inputs
+                document.getElementById('producto-autocomplete').value = '';
+                document.getElementById('producto-codigo-input').value = '';
+                document.getElementById('producto-id-hidden').value = '';
+                document.getElementById('producto-suggestions').classList.add('hidden');
+            } else {
+                alert(data.error || 'Error al agregar detalle');
+            }
+        }).catch(err => { console.error(err); alert('Error en la petición.'); });
+    });
+
+    // Delegación para botones quitar
+    document.addEventListener('click', function(e){
+        if(e.target && e.target.closest('.btn-quitar-detalle')){
+            const btn = e.target.closest('.btn-quitar-detalle');
+            const detalleId = btn.getAttribute('data-detalle-id');
+            const tr = btn.closest('tr');
+            
+            fetch(`/compras/detalle/${detalleId}/quitar/`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCsrf()
+                }
+            }).then(r => r.json()).then(data => {
+                if(data.success){
+                    tr.remove();
+                    document.getElementById('compra-subtotal').textContent = parseFloat(data.totales.subtotal).toFixed(0);
+                    document.getElementById('compra-iva').textContent = parseFloat(data.totales.iva).toFixed(0);
+                    document.getElementById('compra-total').textContent = parseFloat(data.totales.total).toFixed(0);
+                } else {
+                    alert(data.error || 'No se pudo eliminar el detalle');
+                }
+            }).catch(err => { console.error(err); alert('Error en la petición.'); });
+        }
+    });
+
+    // Autocomplete & suggestions
+    const acInput = document.getElementById('producto-autocomplete');
+    const suggestions = document.getElementById('producto-suggestions');
+    let acTimeout = null;
+    let focusedIndex = -1;
+
+    function renderSuggestions(items){
+        suggestions.innerHTML = '';
+        focusedIndex = -1;
+        if(!items || !items.length){ suggestions.classList.add('hidden'); return; }
+        items.forEach((p, idx) => {
+            const div = document.createElement('div');
+            div.className = 'suggestion-item';
+            div.innerHTML = `
+                <span class="suggestion-nombre">${p.nombre}</span>
+                <span class="suggestion-codigo">${p.codigo_barra || 'sin código'}</span>
+                <span class="suggestion-precio">$${parseFloat(p.precio_compra || 0).toFixed(0)}</span>
+            `;
+            div.dataset.id = p.id;
+            div.dataset.nombre = p.nombre;
+            div.dataset.codigo = p.codigo_barra || '';
+            div.dataset.precio = p.precio_compra || '';
+            div.dataset.index = idx;
+            suggestions.appendChild(div);
+        });
+        suggestions.classList.remove('hidden');
+    }
+
+    function highlightSuggestion(index){
+        const nodes = suggestions.querySelectorAll('.suggestion-item');
+        nodes.forEach(n => n.classList.remove('active'));
+        if(index >= 0 && index < nodes.length){
+            nodes[index].classList.add('active');
+            nodes[index].scrollIntoView({block:'nearest'});
+            focusedIndex = index;
+        } else {
+            focusedIndex = -1;
+        }
+    }
+
+    function fetchSuggestions(q, onResult){
+        fetch(`{% url 'compras:buscar_productos' %}?q=${encodeURIComponent(q)}`, { headers: {'X-Requested-With': 'XMLHttpRequest'} })
+            .then(r => r.json())
+            .then(data => onResult(data.results || []))
+            .catch(err => { console.error(err); onResult([]); });
+    }
+
+    acInput.addEventListener('input', function(e){
+        const q = this.value.trim();
+        document.getElementById('producto-id-hidden').value = '';
+        if(acTimeout) clearTimeout(acTimeout);
+        if(!q){ suggestions.classList.add('hidden'); return; }
+        acTimeout = setTimeout(()=>{
+            fetchSuggestions(q, renderSuggestions);
+        }, 150);
+    });
+
+    acInput.addEventListener('keydown', function(e){
+        const nodes = suggestions.querySelectorAll('.suggestion-item');
+        if(e.key === 'ArrowDown'){
+            e.preventDefault();
+            if(nodes.length === 0) return;
+            let next = focusedIndex + 1;
+            if(next >= nodes.length) next = 0;
+            highlightSuggestion(next);
+        } else if(e.key === 'ArrowUp'){
+            e.preventDefault();
+            if(nodes.length === 0) return;
+            let prev = focusedIndex - 1;
+            if(prev < 0) prev = nodes.length - 1;
+            highlightSuggestion(prev);
+        } else if(e.key === 'Enter'){
+            if(focusedIndex >= 0){
+                e.preventDefault();
+                const chosen = suggestions.querySelector(`.suggestion-item[data-index="${focusedIndex}"]`);
+                if(chosen){ chosen.click(); }
+            } else {
+                const pid = document.getElementById('producto-id-hidden').value;
+                if(pid){ e.preventDefault(); form.requestSubmit(); }
+            }
+        }
+    });
+
+    suggestions.addEventListener('click', function(e){
+        const item = e.target.closest('.suggestion-item');
+        if(!item) return;
+        document.getElementById('producto-autocomplete').value = item.dataset.nombre;
+        document.getElementById('producto-id-hidden').value = item.dataset.id;
+        document.getElementById('producto-codigo-input').value = item.dataset.codigo || '';
+        document.getElementById('precio-input').value = item.dataset.precio || '';
+        suggestions.classList.add('hidden');
+        focusedIndex = -1;
+    });
+
+    acInput.addEventListener('paste', function(e){
+        const pasted = (e.clipboardData || window.clipboardData).getData('text') || '';
+        const q = pasted.trim();
+        if(!q) return;
+        fetchSuggestions(q, function(items){
+            if(items.length === 1){
+                const p = items[0];
+                document.getElementById('producto-autocomplete').value = p.nombre;
+                document.getElementById('producto-id-hidden').value = p.id;
+                document.getElementById('producto-codigo-input').value = p.codigo_barra || '';
+                document.getElementById('precio-input').value = p.precio_compra || '';
+                suggestions.classList.add('hidden');
+                document.getElementById('cantidad-input').focus();
+            } else if(items.length > 1){
+                renderSuggestions(items);
+            }
+        });
+    });
+
+    document.addEventListener('click', function(e){
+        if(!e.target.closest('#producto-autocomplete') && !e.target.closest('#producto-suggestions')){
+            suggestions.classList.add('hidden');
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Detalle del Descuento</h2>
+<p>Código: {{ object.codigo }}</p>
+<p>Descripción: {{ object.descripcion }}</p>
+<p>Porcentaje: {{ object.porcentaje_descuento }}%</p>
+<p>Activo: {{ object.activo }}</p>
+<p>Vigencia: Del {{ object.fecha_inicio }} al {{ object.fecha_fin }}</p>
+<a href="{% url 'descuentopromocional_update' object.pk %}">Editar</a> |
+<a href="{% url 'descuentopromocional_delete' object.pk %}">Eliminar</a> |
+<a href="{% url 'descuentopromocional_list' %}">Volver a la lista</a>
+{% endblock %}

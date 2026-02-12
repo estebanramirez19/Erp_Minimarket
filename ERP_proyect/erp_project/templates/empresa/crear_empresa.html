@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Crear Empresa{% endblock %}
+
+{% block contenido %}
+
+<div class="card form-card mt-4">
+    <div class="card-header">
+        <h3 class="card-title mb-0">Agregar Nueva Empresa</h3>
+    </div>
+
+    <div class="card-body">
+        {% include "empresa/forms.html" %}
+    </div>
+</div>
+
+{% endblock %}
