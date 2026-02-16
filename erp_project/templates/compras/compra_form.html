@@ -1,0 +1,35 @@
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <h3>Datos de la compra</h3>
+    {{ compra_form.as_p }}
+
+    <h3>Detalle</h3>
+    {{ formset.management_form }}
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio unitario</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for form in formset %}
+            <tr>
+                <td>{{ form.producto }}</td>
+                <td>{{ form.cantidad }}</td>
+                <td>{{ form.precio_unitario }}</td>
+                <td>
+                    {% if form.instance.pk %}
+                        {{ form.DELETE }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="submit">Guardar compra</button>
+</form>

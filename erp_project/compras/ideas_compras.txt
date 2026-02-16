@@ -1,0 +1,1 @@
+dejar un boton externo para elegir si queremos agregar una factura, boleta, nc o nd 

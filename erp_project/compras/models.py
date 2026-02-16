@@ -1,77 +1,126 @@
 from django.db import models
+from django.contrib.auth.models import User
 from proveedores.models import Proveedor
 from inventario.models import Producto
-from django.contrib.auth.models import User
+from decimal import Decimal
+
+
+IVA_CHILE = Decimal("0.19")
+
 
 class Compra(models.Model):
-    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE, related_name='compras')
+    TIPO_DOCUMENTO_CHOICES = [
+        ("FACTURA", "Factura"),
+        ("BOLETA", "Boleta"),
+        ("NC", "Nota de Crédito"),
+        ("ND", "Nota de Débito"),
+        ("SD", "Sin Documento"),
+    ]
 
-    
-    tipo_documento = models.CharField(max_length=15, choices=[('Factura', 'Factura'), ('Boleta', 'Boleta'), ('Nota de Crédito', 'Nota de Crédito'),('Nota de Débito', 'Nota de Débito'), ('Sin Documento', 'Sin Documento')], default='Boleta')
+    proveedor = models.ForeignKey(
+        Proveedor,
+        on_delete=models.PROTECT,
+        related_name="compras",
+    )
+
+    tipo_documento = models.CharField(
+        max_length=10,
+        choices=TIPO_DOCUMENTO_CHOICES,
+        default="FACTURA",
+    )
     folio = models.CharField(max_length=30, blank=True)
 
-    razon_social = models.CharField(max_length=200, blank=True, help_text="Razón social de la empresa")
-    rut = models.CharField(max_length=20, blank=True, help_text="RUT de la empresa")
-    giro = models.CharField(max_length=100, blank=True, help_text="Giro de la empresa")
-    direccion = models.CharField(max_length=255, blank=True, help_text="Dirección de la empresa")    
-    email = models.EmailField(blank=True, help_text="Correo electrónico de la empresa")
-    Comuna = models.CharField(max_length=100, blank=True, help_text="Comuna de la empresa")
-    ciudad = models.CharField(max_length=100, blank=True, help_text="Ciudad de la empresa")
-    
-    fecha_compra = models.DateField(null=True, blank=True, help_text="Fecha del documento")
-    
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE) #usuario que gestiona la compra
-    
-    subtotal = models.DecimalField(max_digits=10, decimal_places=0, default=0)
-    iva = models.DecimalField(max_digits=10, decimal_places=0, default=0)
-    total = models.DecimalField(max_digits=12, decimal_places=0, default=0) 
+    # Si quieres histórico inmutable del proveedor en la compra:
+    razon_social_proveedor = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Razón social del proveedor al momento de la compra",
+    )
+    rut_proveedor = models.CharField(
+        max_length=20,
+        blank=True,
+        help_text="RUT del proveedor al momento de la compra",
+    )
+    giro_proveedor = models.CharField(max_length=100, blank=True)
+    direccion_proveedor = models.CharField(max_length=255, blank=True)
+    email_proveedor = models.EmailField(blank=True)
+    comuna_proveedor = models.CharField(max_length=100, blank=True)
+    ciudad_proveedor = models.CharField(max_length=100, blank=True)
 
-    pdf = models.FileField(upload_to='media/pdfs/', blank=True, null=True)
+    fecha_compra = models.DateField(null=True, blank=True)
+
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="compras_registradas",
+    )
+    empresa = models.CharField(max_length=100, blank=True)
+
+    razon_social_empresa = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Razón social de la empresa al momento de la compra",
+    )
+    rut_empresa = models.CharField(
+        max_length=20,
+        blank=True,
+        help_text="RUT de la empresa al momento de la compra",
+    )
+    
+    giro_empresa = models.CharField(max_length=100, blank=True)
+    direccion_empresa = models.CharField(max_length=255, blank=True)
+    email_empresa = models.EmailField(blank=True)
+    comuna_empresa = models.CharField(max_length=100, blank=True)
+    ciudad_empresa = models.CharField(max_length=100, blank=True)
+
+
+    # Montos en pesos (entero); si quieres decimales, usa decimal_places=2
+    subtotal = models.DecimalField(max_digits=12, decimal_places=0, default=0)
+    iva = models.DecimalField(max_digits=12, decimal_places=0, default=0)
+    total = models.DecimalField(max_digits=14, decimal_places=0, default=0)
+
+    pdf = models.FileField(upload_to="compras/pdfs/", blank=True, null=True)
+
+    class Meta:
+        ordering = ["-fecha_compra", "-id"]
+
+    def __str__(self):
+        return f"Compra #{self.id} - {self.proveedor}"
+
+    def calcular_totales(self, guardar=True):
+        subtotal = sum(
+            detalle.subtotal for detalle in self.detalles.all()
+        )
+        iva = (subtotal * IVA_CHILE).quantize(Decimal("1"))
+        total = subtotal + iva
+
+        self.subtotal = subtotal
+        self.iva = iva
+        self.total = total
+
+        if guardar:
+            self.save(update_fields=["subtotal", "iva", "total"])
+
+        return self.subtotal, self.iva, self.total
 
 
 class DetalleCompra(models.Model):
-    compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name='detalles')
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)  #aqui tengo que ir a el tema del inventario
-    cantidad = models.IntegerField()
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=0)
+    compra = models.ForeignKey(
+        Compra,
+        on_delete=models.CASCADE,
+        related_name="detalles",
+    )
+    producto = models.ForeignKey(
+        Producto,
+        on_delete=models.PROTECT,
+        related_name="detalles_compra",
+    )
+    cantidad = models.PositiveIntegerField()
+    precio_unitario = models.DecimalField(max_digits=12, decimal_places=0)
 
-    def subtotal(self):        return self.cantidad * self.precio_unitario
-
-class DevolucionCompra(models.Model):
-    compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name='devoluciones')
-    fecha = models.DateTimeField(auto_now_add=True)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    motivo = models.TextField(blank=True)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=0, default=0)
-    iva = models.DecimalField(max_digits=10, decimal_places=0, default=0
-)
-    total = models.DecimalField(max_digits=12, decimal_places=0, default=0)
-
-class DetalleDevolucionCompra(models.Model):
-    devolucion = models.ForeignKey(DevolucionCompra, on_delete=models.CASCADE, related_name='detalles')
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad = models.IntegerField()
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=0)
-
-    def subtotal(self):
-        return self.cantidad * self.precio_unitario
-    
-class CambioCompra(models.Model):
-    compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name='cambios')
-    fecha = models.DateTimeField(auto_now_add=True)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    motivo = models.TextField(blank=True)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=0, default=0)
-    iva = models.DecimalField(max_digits=10, decimal_places=0, default=0)
-    total = models.DecimalField(max_digits=12, decimal_places=0, default=0)
-
-class DetalleCambioCompra(models.Model):
-    cambio = models.ForeignKey(CambioCompra, on_delete=models.CASCADE, related_name='detalles')
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad = models.IntegerField()
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=0)
-
+    @property
     def subtotal(self):
         return self.cantidad * self.precio_unitario
 
-
+    def __str__(self):
+        return f"{self.producto} x {self.cantidad}"

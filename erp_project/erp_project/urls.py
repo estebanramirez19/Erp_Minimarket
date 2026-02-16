@@ -16,7 +16,6 @@ urlpatterns = [
     path('clientes/', include('clientes.urls')),    # Todo lo de clientes, comienza en "/clientes/"
     path('ventas/', include('ventas.urls')),         # Todo lo de ventas, comienza en "/ventas/"
     path('compras/', include('compras.urls')),       # Todo lo de compras, comienza en "/compras/"
-    path('integraciones/', include('integraciones.urls')), # Todo lo de integraciones,            # Todo lo de api,
     path('contabilidad/', include('contabilidad.urls')),# Todo lo de contabilidad,
     path('empresa/', include('empresa.urls')),# Todo lo de empresa,
 
