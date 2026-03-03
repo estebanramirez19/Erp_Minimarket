@@ -10,4 +10,3 @@ class DetalleCompraSerializer(serializers.ModelSerializer):
         model = DetalleCompra
         fields = '__all__'
 
-¿

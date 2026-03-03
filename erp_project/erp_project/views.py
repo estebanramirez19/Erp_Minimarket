@@ -1,10 +1,11 @@
 from django.shortcuts import render
+from django.contrib.auth.models import User
 from inventario.models import Producto, Inventario
 from clientes.models import Cliente
 from proveedores.models import Proveedor
 from ventas.models import Venta
 from compras.models import Compra
-#from account.models import PerfilUsuario
+from account.models import UserProfile
 from django.db.models import Sum
 from decimal import Decimal
 
@@ -15,8 +16,7 @@ def inicio(request):
     total_proveedores = Proveedor.objects.count()
     total_ventas = Venta.objects.count()
     total_compras = Compra.objects.count()
-  #  total_usuarios = PerfilUsuario.objects.count()
-    
+    total_usuarios = User.objects.count()
     # Totales financieros
     ventas_total = Venta.objects.aggregate(Sum('total'))['total__sum'] or Decimal('0.00')
     compras_total = Compra.objects.aggregate(Sum('total'))['total__sum'] or Decimal('0.00')

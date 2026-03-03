@@ -7,7 +7,6 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('usuarios', '0002_perfilusuario_activo_perfilusuario_contraseña_and_more'),
         ('ventas', '0001_initial'),
     ]
 
@@ -54,7 +53,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='venta',
             name='vendedor',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='usuarios.perfilusuario'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='auth.user'),
         ),
         migrations.AddField(
             model_name='venta',

@@ -2,13 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from clientes.models import Cliente
 from inventario.models import Producto
-from usuarios.models import PerfilUsuario  # O usa User directamente
 
 ##falta mejorar aun
 
 class Venta(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)
-    vendedor = models.ForeignKey(PerfilUsuario, on_delete=models.SET_NULL, null=True, blank=True)
+    vendedor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     fecha = models.DateTimeField(auto_now_add=True)
     tipo_documento = models.CharField(
         max_length=20, 

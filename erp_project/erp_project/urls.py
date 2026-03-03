@@ -11,7 +11,6 @@ urlpatterns = [
     path('account/', include('account.urls')),
 
     # Rutas de las aplicaciones
-    path('usuarios/', include('usuarios.urls')),       # Todo lo de usuarios, comienza en "usuarios/"
     path('inventario/', include('inventario.urls')),             # Todo lo de inventario, comienza en "inventario/"
     path('proveedores/', include('proveedores.urls')), # Todo lo de proveedores, comienza en "/proveedores/"
     path('clientes/', include('clientes.urls')),    # Todo lo de clientes, comienza en "/clientes/"

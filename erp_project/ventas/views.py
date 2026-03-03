@@ -12,7 +12,7 @@ from decimal import Decimal, ROUND_HALF_UP
 ##esto hay que hacerlo pensando en un minimarket real
 # Helper para saber si el usuario es administrador/permitido
 def es_admin(user):
-    return hasattr(user, "perfilusuario") and user.perfilusuario.rol in ['admin', 'dueño', 'gerente']
+    return user.is_staff or (hasattr(user, "profile") and user.profile.rol in ['Administrador', 'Supervisor'])
 
 
 def crear_venta(request):
