@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from inventario.models import Producto, Inventario
 from clientes.models import Cliente
@@ -9,6 +10,7 @@ from account.models import UserProfile
 from django.db.models import Sum
 from decimal import Decimal
 
+@login_required(login_url='account:login')
 def inicio(request):
     # Estadísticas generales
     total_productos = Producto.objects.count()

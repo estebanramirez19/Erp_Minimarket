@@ -56,6 +56,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # custom middleware that forces login for all views except those listed below
+    'erp_project.middleware.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -145,6 +147,18 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'account:dashboard'
+# After a successful login, redirect to the main homepage (inicio).
+# earlier this pointed to account:dashboard which did not exist in urls.
+LOGIN_REDIRECT_URL = 'inicio'
 LOGIN_URL = 'account:login'
 LOGOUT_URL = 'account:logout'
+
+# URLs that should be accessible without authentication. Patterns are
+# matched against request.path_info.lstrip('/').
+LOGIN_EXEMPT_URLS = [
+    r'^account/register/$',   # registration page
+    r'^account/login/$',      # login form (middleware auto-adds this too)
+    r'^admin/',               # Django admin
+    r'^static/',              # static files
+    r'^media/',               # media uploads
+]

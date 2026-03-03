@@ -34,8 +34,9 @@ def user_login(request):
 
 @login_required(login_url='account:login')
 def dashboard(request):
-    """Dashboard del usuario autenticado"""
-    return render(request, 'account/dashboard.html', {'user': request.user})
+    """Inicio del usuario autenticado (no se usa mucho, pero mantenemos por si acaso)."""
+    # use the same template as the site homepage
+    return render(request, 'inicio.html', {'user': request.user})
 
 
 def register(request):
