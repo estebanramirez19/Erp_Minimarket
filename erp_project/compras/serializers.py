@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import CambioCompra, Compra, DetalleCompra, DevolucionCompra
-
+from .models import  Compra, DetalleCompra
 class CompraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Compra
@@ -11,22 +10,4 @@ class DetalleCompraSerializer(serializers.ModelSerializer):
         model = DetalleCompra
         fields = '__all__'
 
-class DevolucionCompraSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DevolucionCompra
-        fields = '__all__'
-
-class DetalleDevolucionCompraSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DevolucionCompra
-        fields = '__all__'
-
-class CambioCompraSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CambioCompra
-        fields = '__all__'
-
-class DetalleCambioCompraSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CambioCompra
-        fields = '__all__'
+¿

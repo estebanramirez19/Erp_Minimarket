@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'account.apps.AccountConfig'
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,14 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'usuarios',
     'inventario.apps.InventarioConfig',
     'ventas',
     'compras',
     'clientes',
     'proveedores',
     'contabilidad',
-    'empresa'
+    'empresa',
+    'widget_tweaks',
     
 ]
 
@@ -143,3 +144,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'account:dashboard'
+LOGIN_URL = 'account:login'
+LOGOUT_URL = 'account:logout'

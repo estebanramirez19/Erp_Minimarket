@@ -4,7 +4,7 @@ from clientes.models import Cliente
 from proveedores.models import Proveedor
 from ventas.models import Venta
 from compras.models import Compra
-from usuarios.models import PerfilUsuario
+#from account.models import PerfilUsuario
 from django.db.models import Sum
 from decimal import Decimal
 
@@ -15,7 +15,7 @@ def inicio(request):
     total_proveedores = Proveedor.objects.count()
     total_ventas = Venta.objects.count()
     total_compras = Compra.objects.count()
-    total_usuarios = PerfilUsuario.objects.count()
+  #  total_usuarios = PerfilUsuario.objects.count()
     
     # Totales financieros
     ventas_total = Venta.objects.aggregate(Sum('total'))['total__sum'] or Decimal('0.00')

@@ -8,6 +8,7 @@ urlpatterns = [
     
     path('', inicio, name='inicio'), 
     path('admin/', admin.site.urls),
+    path('account/', include('account.urls')),
 
     # Rutas de las aplicaciones
     path('usuarios/', include('usuarios.urls')),       # Todo lo de usuarios, comienza en "usuarios/"
