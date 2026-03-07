@@ -1,0 +1,66 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.17 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.17">
+  <diagram name="Página-1" id="EKR3isLoNUUInbFctr4b">
+    <mxGraphModel dx="838" dy="975" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="CukkeIqM93b7Fftlygm3-1" value="" style="rounded=0;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="90" width="620" height="540" as="geometry" />
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-3" value="Models Inventario" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="90" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="CukkeIqM93b7Fftlygm3-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-4" value="Producto" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="359" y="240" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-9" value="Categoria producto" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="240" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="CukkeIqM93b7Fftlygm3-10">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-10" value="Ajuste de inventario" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="240" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="CukkeIqM93b7Fftlygm3-11">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-11" value="Extravios" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="370" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="CukkeIqM93b7Fftlygm3-12" target="CukkeIqM93b7Fftlygm3-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-12" value="Robos" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="370" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="CukkeIqM93b7Fftlygm3-13" target="CukkeIqM93b7Fftlygm3-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-13" value="Merma" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="359" y="370" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="CukkeIqM93b7Fftlygm3-14">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="415" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-14" value="Inventario" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="150" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="CukkeIqM93b7Fftlygm3-22" value="Segun las relaciones tenemos el objeto producto y quien debe de crearlo seria COMPRAS y los que deben quitar serian VENTA y AJUSTE DE INVENTARIO" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="150" y="460" width="140" height="140" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -16,7 +16,7 @@
         <link rel="stylesheet" href="{% static 'global.css' %}">
         <link rel="stylesheet" href="{% static 'css/compras.css' %}">
         <link rel="stylesheet" href="{% static 'css/ventas.css' %}">
-        
+         
         {% block extra_css %}{% endblock %}
     </head>
 
@@ -25,10 +25,11 @@
         <nav class="navbar navbar-expand-lg navbar-light sticky-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{% url 'inicio' %}">
-                    <i class="bi bi-briefcase"></i> ERP System
+                    <i class="bi bi-briefcase"></i> MinimarketOnline.cl
                 </a>
                 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 
@@ -41,7 +42,8 @@
                             </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navCompras" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navCompras" 
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-cart"></i> Compras
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navCompras">
@@ -50,26 +52,61 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navVentas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navVentas" 
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-cash-coin"></i> Ventas
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navVentas">
                                 <li><a class="dropdown-item" href="{% url 'ventas:lista_ventas' %}">Listar Ventas</a></li>
                                 <li><a class="dropdown-item" href="{% url 'ventas:crear_venta' %}">Nueva Venta</a></li>
+                                <li><a class="dropdown-item" href="{% url 'ventas:crear_venta' %}">Editar Venta</a></li>
+                                <li><a class="dropdown-item" href="{% url 'ventas:crear_venta' %}">Eliminar Venta</a></li>
+
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'inventario:datos_producto' %}">
-                                <i class="bi bi-box"></i> Inventario
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'proveedor:proveedores' %}">
-                                <i class="bi bi-building"></i> Proveedores
-                            </a>
-                        </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navContabilidad" 
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-cash-coin"></i> Contabilidad
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navContabilidad">
+                                <li><a class="dropdown-item" href="#">Sistema de Caja</a></li>
+                                <li><a class="dropdown-item" href="#">Descuentos</a></li>
+                                <li><a class="dropdown-item" href="#">Gastos</a></li>
+                                <li><a class="dropdown-item" href="#">Inversores</a></li>
+                                <li><a class="dropdown-item" href="#">Detalles</a></li>     
+                            </ul>
+                        </li>
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navInventario" 
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-people"></i> Inventario
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navInventario">
+                                <li><a class="dropdown-item" href="#">Listar Productos</a></li>
+                                <li><a class="dropdown-item" href="#">Nuevo Producto</a></li>
+                                <li><a class="dropdown-item" href="#">Editar Producto</a></li>
+                                <li><a class="dropdown-item" href="#">Eliminar Producto</a></li>
+                            </ul>
+                        </li>
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navProveedores" 
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-people"></i> Proveedores
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navProveedores">
+                                <li><a class="dropdown-item" href="#">Listar Proveedores</a></li>
+                                <li><a class="dropdown-item" href="#">Nuevo Proveedor</a></li>
+                                <li><a class="dropdown-item" href="#">Editar Proveedor</a></li>
+                                <li><a class="dropdown-item" href="#">Eliminar Proveedor</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navUser" 
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person-circle"></i> {{ user.username }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navUser">

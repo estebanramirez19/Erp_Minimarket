@@ -9,7 +9,7 @@ class Empresa(models.Model):
     giro = models.CharField(max_length=100, blank=True, help_text="Giro de la empresa")
     direccion = models.CharField(max_length=255, blank=True, help_text="Dirección de la empresa")    
     email = models.EmailField(blank=True, help_text="Correo electrónico de la empresa")
-    Comuna = models.CharField(max_length=100, blank=True, help_text="Comuna de la empresa")
+    comuna = models.CharField(max_length=100, blank=True, help_text="Comuna de la empresa")
     ciudad = models.CharField(max_length=100, blank=True, help_text="Ciudad de la empresa")
     region = models.CharField(max_length=100, blank=True, help_text="Región de la empresa")
     telefono = models.CharField(max_length=20, blank=True, help_text="Teléfono de la empresa")

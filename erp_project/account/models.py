@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from empresa.models import Empresa
 
 
 class UserProfile(models.Model):
@@ -23,6 +24,10 @@ class UserProfile(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     ultima_conexion = models.DateTimeField(blank=True, null=True)
+    empresa = models.ForeignKey(
+        Empresa, on_delete=models.SET_NULL, 
+        null=True, blank=True, related_name='usuarios')
+    
 
     class Meta:
         verbose_name = "Perfil de Usuario"

@@ -52,7 +52,7 @@ def buscar_productos(request):
 def compra_crear(request):
     if request.method == "POST":
         compra_form = CompraForm(request.POST, request.FILES)
-        formset = DetalleCompraFormSet(request.POST, prefix="detalles")
+        formset = DetalleCompraFormSet(request.POST, prefix="Detalle Compra")
 
         if compra_form.is_valid() and formset.is_valid():
             compra = compra_form.save(commit=False)
@@ -68,6 +68,13 @@ def compra_crear(request):
                 compra.email_proveedor = getattr(p, "email", "")
                 compra.comuna_proveedor = getattr(p, "comuna", "")
                 compra.ciudad_proveedor = getattr(p, "ciudad", "")
+            
+            compra.empresa_razon_social = request.user.empresa.razon_social
+            compra.empresa_rut = request.user.empresa.rut
+            compra.empresa_giro = request.user.empresa.giro
+            compra.empresa_direccion = request.user.empresa.direccion
+            compra.empresa_comuna = request.user.empresa.comuna
+            compra.empresa_ciudad = request.user.empresa.ciudad
 
             compra.save()
 
