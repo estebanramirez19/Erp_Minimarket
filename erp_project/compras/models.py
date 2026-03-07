@@ -118,7 +118,7 @@ class DetalleCompra(models.Model):
 
     @property
     def subtotal(self):
-        return self.producto.precio_compra * self.inventario.cantidad
+        return self.inventario.producto.precio_compra * self.inventario.cantidad
 
     def __str__(self):
-        return f"Codigo: {self.producto.id} | Producto: {self.producto.nombre} | Cantidad: {self.inventario.cantidad} | Subtotal: {self.subtotal}"
+        return f"Codigo: {self.producto.id} | Producto: {self.producto.nombre} | Cantidad: {self.inventario.cantidad} | Precio Unitario: {self.inventario.producto.precio_compra} | Subtotal: {self.subtotal}"

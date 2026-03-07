@@ -12,14 +12,14 @@ class CompraForm(forms.ModelForm):
 class DetalleCompraForm(forms.ModelForm):
     class Meta:
         model = DetalleCompra
-        fields = ["producto", "cantidad", "precio_unitario"]  # Quita "id"
+        fields = ["producto", "cantidad", "precio_unitario"]
         widgets = {
             "producto": forms.Select(attrs={"class": "form-control"}),
             "cantidad": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
             "precio_unitario": forms.NumberInput(attrs={"class": "form-control", "min": 0}),
         }
 
-    def __init__(self, *args, **kwargs):
+def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Lógica condicional para producto
         if self.instance.pk:  # Editando existente
