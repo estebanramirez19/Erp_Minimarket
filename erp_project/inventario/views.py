@@ -31,12 +31,14 @@ def editar_producto(request, producto_id):
         return redirect('inventario:datos_producto')
     return render(request, "inventario/editar_producto.html", {"formulario": formulario})
 
-def crear_producto(request):
+def crear_productos(request):
     formulario = ProductoForm(request.POST or None, request.FILES or None)
     if request.method == "POST" and formulario.is_valid():
         formulario.save()
         return redirect('inventario:datos_producto')
     return render(request, "inventario/crear_producto.html", {"formulario": formulario})
+
+
 
 
 def crear_categoria(request):

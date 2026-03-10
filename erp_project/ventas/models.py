@@ -23,62 +23,42 @@ TIPO_DOCUMENTO_CHOICES = [
     ("SD", "Sin Documento"),
 ]
 
-class Venta(models.Model): 
-    folio = models.CharField(max_length=30, blank=True)
-    
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)  # Relación con Empresa para datos
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True) #relacion con cliente, puede ser null si es una venta a un cliente ocasional o sin registro, pero si es a un cliente registrado, no puede ser null
-    vendedor = models.ForeignKey(User, on_delete=models.SET_NULL) #relacion con account para autenticar, puede ser null si se borra el usuario, pero si el usuario existe, no puede ser null
-    
+class Venta(models.Model):
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)
+    vendedor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     fecha = models.DateTimeField(auto_now_add=True)
-
-    tipo_documento = models.CharField(
-        max_length=20, 
-        choices=TIPO_DOCUMENTO_CHOICES, 
-        default='BOLETA'
-    )
-
-    tipo_pago = models.CharField(
-        max_length=20,
-        choices=TIPO_PAGO_CHOICES,
-        default='EFECTIVO'
-    )
+    tipo_documento = models.CharField(max_length=20, choices=TIPO_DOCUMENTO_CHOICES, default="BOLETA")
+    tipo_pago = models.CharField(max_length=20, choices=TIPO_PAGO_CHOICES, default="EFECTIVO")
 
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     iva = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    pdf = models.FileField(upload_to='media/ventas/pdfs/', blank=True, null=True)
 
     class Meta:
-        ordering = ["-fecha_compra", "-id"]
+        ordering = ["-fecha", "-id"]  # ← corregido
 
     def calcular_totales(self, guardar=True):
-        subtotal = sum(
-            detalle.subtotal for detalle in self.detalles.all()
-        )
+        subtotal = sum(det.subtotal for det in self.detalles.all())
         iva = (subtotal * IVA_CHILE).quantize(Decimal("1"))
         total = subtotal + iva
-
-        self.subtotal = subtotal
-        self.iva = iva
-        self.total = total
-
+        self.subtotal, self.iva, self.total = subtotal, iva, total
         if guardar:
             self.save(update_fields=["subtotal", "iva", "total"])
-
         return self.subtotal, self.iva, self.total
 
     def __str__(self):
         return f"Venta {self.id} Folio: {self.folio} - Razon Social: {self.empresa.razon_social} - RUT: {self.empresa.rut} - Giro: {self.empresa.giro}- Direccion: {self.empresa.direccion} - Comuna: {self.empresa.comuna} - Ciudad: {self.empresa.ciudad} - Fecha: {self.fecha.strftime('%Y-%m-%d %H:%M:%S')} - Metodo de Pago: {self.tipo_pago} -SubTotal: ${self.subtotal} - IVA: ${self.iva} - Total: ${self.total}"
 
-
 class DetalleVenta(models.Model):
-    venta = models.ForeignKey(Venta, on_delete=models.CASCADE, related_name='detalles')
-    inventario = models.ForeignKey(Inventario, on_delete=models.CASCADE, related_name='detalles_venta')
+    venta = models.ForeignKey(Venta, on_delete=models.CASCADE, related_name="detalles")
+    inventario = models.ForeignKey(Inventario, on_delete=models.CASCADE, related_name="detalles_venta")
+    cantidad = models.PositiveIntegerField()
+    precio_unitario = models.DecimalField(max_digits=12, decimal_places=2)
 
     @property
     def subtotal(self):
-        return self.inventario.producto.precio_venta * self.inventario.cantidad 
+        return self.precio_unitario * self.cantidad
     
     def __str__(self):
         return f"Venta {self.venta.id} Codigo: {self.inventario.producto.id} | Producto: {self.inventario.producto.nombre} | Cantidad: {self.inventario.cantidad} | Precio Unitario: ${self.inventario.producto.precio_venta} | Subtotal: ${self.subtotal}"
@@ -124,27 +104,31 @@ class FolioCounter(models.Model):
 
 
 class Pago(models.Model):
-    """Registra el método y detalles del pago de una venta"""
-    venta = models.OneToOneField(Venta, on_delete=models.CASCADE, related_name='pago')
+    venta = models.OneToOneField(Venta, on_delete=models.CASCADE, related_name="pago")
 
-    if venta.tipo_pago == "EFECTIVO": # Efectivo
-        monto_recibido = models.DecimalField(max_digits=12, decimal_places=0, default=0)
-        vuelto = models.DecimalField(max_digits=12, decimal_places=0, default=0, null=True, blank=True)
-    
-    elif venta.tipo_pago == "DEBITO" or venta.tipo_pago == "CREDITO": #Tarjeta
-        numero_tarjeta = models.CharField(max_length=4, blank=True, help_text="Últimos 4 dígitos")
-        banco = models.CharField(max_length=30, blank=True)
-  
-    elif venta.tipo_pago == "TRANSFERENCIA": # Transferencia
-        numero_operacion = models.CharField(max_length=50, blank=True)
-        banco_origen = models.CharField(max_length=100, blank=True)
-    
-    elif venta.tipo_pago == "MIXTO": # Mixto
-        monto_efectivo = models.DecimalField(max_digits=12, decimal_places=0, default=0, null=True, blank=True)
-        monto_tarjeta = models.DecimalField(max_digits=12, decimal_places=0, default=0, null=True, blank=True)
-        monto_transferencia = models.DecimalField(max_digits=12, decimal_places=0, default=0, null=True, blank=True)
+    # Datos genéricos
+    tipo_pago = models.CharField(max_length=20, choices=TIPO_PAGO_CHOICES)
+
+    # Efectivo
+    monto_recibido = models.DecimalField(max_digits=12, decimal_places=0, null=True, blank=True)
+    vuelto = models.DecimalField(max_digits=12, decimal_places=0, null=True, blank=True)
+
+    # Tarjeta
+    numero_tarjeta = models.CharField(max_length=4, blank=True)
+    banco_tarjeta = models.CharField(max_length=30, blank=True)
+
+    # Transferencia
+    numero_operacion = models.CharField(max_length=50, blank=True)
+    banco_origen = models.CharField(max_length=100, blank=True)
+
+    # Mixto
+    monto_efectivo = models.DecimalField(max_digits=12, decimal_places=0, null=True, blank=True)
+    monto_tarjeta = models.DecimalField(max_digits=12, decimal_places=0, null=True, blank=True)
+    monto_transferencia = models.DecimalField(max_digits=12, decimal_places=0, null=True, blank=True)
 
     fecha_pago = models.DateTimeField(auto_now_add=True)
-    
+
     def __str__(self):
-        return f"Pago {self.venta.id} - Metodo de Pago: {self.venta.tipo_pago} -Total ${self.venta.total} - Fecha: {self.fecha_pago.strftime('%Y-%m-%d %H:%M:%S')}"
+        return f"Pago venta {self.venta_id} - {self.tipo_pago} - Total ${self.venta.total}"
+
+   

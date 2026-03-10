@@ -8,7 +8,9 @@ from django.http import JsonResponse
 from django.urls import reverse
 from decimal import Decimal, ROUND_HALF_UP
 from django.db import transaction, models
-
+from django.core.exceptions import ValidationError
+from django.db.models import F
+from contabilidad.models import SistemaCaja
 
 #Solo hare a view de crear venta pero bien hecha
 
@@ -37,20 +39,56 @@ def crear_venta(request): # recibe los fomularios de venta y detalle
 
             venta.save()
             formset.instance = venta
-            formset.save()
+            detalles = formset.save()
+
+            # Validar y actualizar stock (restar)
+            for det in detalles:
+                try:
+                    invent = Inventario.objects.get(producto=det.producto)
+                except Inventario.DoesNotExist:
+                    raise ValidationError(f"No hay inventario para {det.producto}.")
+
+                if invent.stock < det.cantidad:
+                    raise ValidationError(
+                        f"Stock insuficiente para {det.producto}. Disponible: {invent.stock}, solicitado: {det.cantidad}."
+                    )
+
+                Inventario.objects.filter(pk=invent.pk).update(
+                    stock=F("stock") - det.cantidad
+                )
 
             venta.calcular_totales()  
 
+            #  ACTUALIZAR CAJA SEGÚN MÉTODO DE PAGO VENTA
+            caja = SistemaCaja.objects.filter(estado="abierto").first()
+            if caja:
+                if venta.tipo_pago == "EFECTIVO":
+                    caja.actualizar_saldo(venta.total, "ingreso")
+                elif venta.tipo_pago in ["TRANSFERENCIA", "DEBITO", "CREDITO"]:
+                    caja.saldo_bancario += venta.total
+                    caja.Ingreso += venta.total
+                    caja.save()
+                elif venta.tipo_pago == "MIXTO":
+                    # Aquí necesitarás usar el modelo Pago
+                    pago = venta.pago  # OneToOne
+                    if pago.monto_efectivo:
+                        caja.actualizar_saldo(pago.monto_efectivo, "ingreso")
+                    if pago.monto_tarjeta or pago.monto_transferencia:
+                        caja.saldo_bancario += (pago.monto_tarjeta or 0) + (pago.monto_transferencia or 0)
+                        caja.Ingreso += (pago.monto_tarjeta or 0) + (pago.monto_transferencia or 0)
+                        caja.save()
+
             messages.success(request, "Venta creada exitosamente.")
+            return redirect("ventas:detalle", venta_id=venta.pk)
     else:
         venta_form = VentaForm()
-        formset = DetalleVentaFormSet(prefix='detalle venta')
-    
+        formset = DetalleVentaFormSet(prefix="detalle venta")
+
     context = {
-        'venta_form': venta_form,
-        'formset': formset,
+        "venta_form": venta_form,
+        "formset": formset,
     }
-    return render(request, 'ventas/crear_venta.html', context)
+    return render(request, "ventas/crear_venta.html", context)
 
 
  #preCIO POR PESO

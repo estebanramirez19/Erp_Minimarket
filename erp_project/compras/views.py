@@ -1,5 +1,5 @@
 from decimal import Decimal
-
+from contabilidad.models import SistemaCaja
 from django import db
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -7,11 +7,13 @@ from django.db import transaction, models
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from inventario.models import Producto
+from inventario.models import Inventario, Producto
 from proveedores.models import Proveedor
 
 from .forms import CompraForm, DetalleCompraFormSet
 from .models import Compra, DetalleCompra
+from django.db.models import F
+from django.core.exceptions import ValidationError
 
 
 # === BÚSQUEDA AJAX DE PRODUCTOS ===
@@ -79,9 +81,32 @@ def compra_crear(request):
             compra.save()
 
             formset.instance = compra
-            formset.save()
+            detalles = formset.save()  # guarda DetalleCompra
+
+            
+
+            # Actualizar stock (sumar)
+            for det in detalles:
+                invent, _ = Inventario.objects.get_or_create(producto=det.producto)
+                Inventario.objects.filter(pk=invent.pk).update(
+                    stock=F("stock") + det.cantidad
+                )
 
             compra.calcular_totales()
+            
+            # ACTUALIZAR CAJA SEGÚN MÉTODO PAGO COMPRA
+            caja = SistemaCaja.objects.filter(estado="abierto").first()
+            if caja:
+                # Supongo que en Compra tienes un campo tipo_pago_compra o similar
+                # Si no, deberías agregarlo.
+                if compra.tipo_pago == "EFECTIVO":
+                    caja.actualizar_saldo(compra.total, "egreso")
+                elif compra.tipo_pago in ["TRANSFERENCIA", "DEBITO", "CREDITO"]:
+                    caja.saldo_bancario -= compra.total
+                    caja.Egreso += compra.total
+                    caja.save()
+                # etc., según tu lógica            
+
 
             messages.success(request, "Compra registrada correctamente.")
             return redirect("compras:detalle", compra_id=compra.pk)
