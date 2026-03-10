@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Caja</h1>
+
+<a href="{% url 'contabilidad:caja_create' %}" class="btn btn-primary mb-3">Nueva caja</a>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Descripción</th>
+      <th>Monto</th>
+      <th>Categoría</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for caja in cajas %}
+      <tr>
+        <td>{{ caja.fecha|date:"Y-m-d H:i" }}</td>
+        <td>{{ caja.descripcion }}</td>
+        <td>${{ caja.monto }}</td>
+        <td>{{ caja.categoria }}</td>
+        <td>
+          <a href="{% url 'contabilidad:caja_update' caja.pk %}" class="btn btn-sm btn-warning">Editar</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">No hay cajas registradas.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

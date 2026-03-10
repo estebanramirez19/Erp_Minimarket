@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Inversiones</h1>
+
+<a href="{% url 'contabilidad:inversion_create' %}" class="btn btn-primary mb-3">Nueva inversión</a>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Descripción</th>
+      <th>Monto</th>
+      <th>Categoría</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for inversion in inversiones %}
+      <tr>
+        <td>{{ inversion.fecha|date:"Y-m-d H:i" }}</td>
+        <td>{{ inversion.descripcion }}</td>
+        <td>${{ inversion.monto }}</td>
+        <td>{{ inversion.categoria }}</td>
+        <td>
+          <a href="{% url 'contabilidad:inversion_update' inversion.pk %}" class="btn btn-sm btn-warning">Editar</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">No hay inversiones registradas.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

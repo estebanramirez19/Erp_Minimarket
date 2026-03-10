@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Gastos</h1>
+
+<a href="{% url 'contabilidad:gasto_create' %}" class="btn btn-primary mb-3">Nuevo gasto</a>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Descripción</th>
+      <th>Monto</th>
+      <th>Categoría</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for gasto in gastos %}
+      <tr>
+        <td>{{ gasto.fecha|date:"Y-m-d H:i" }}</td>
+        <td>{{ gasto.descripcion }}</td>
+        <td>${{ gasto.monto }}</td>
+        <td>{{ gasto.categoria }}</td>
+        <td>
+          <a href="{% url 'contabilidad:gasto_update' gasto.pk %}" class="btn btn-sm btn-warning">Editar</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">No hay gastos registrados.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

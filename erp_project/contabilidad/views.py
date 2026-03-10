@@ -1,111 +1,99 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+# contabilidad/views.py
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
-from .models import Gasto, SistemaCaja, Inversor, DetalleInversion, DescuentoPromocional
+from django.views.generic import ListView, CreateView, UpdateView
 
-# Gasto CRUD
-class GastoList(ListView):
+from .models import Gasto, SistemaCaja, Inversor, DetalleInversion
+from .forms import (
+    GastoForm,
+    SistemaCajaForm,
+    InversorForm,
+    DetalleInversionForm,
+)
+
+
+@method_decorator(login_required, name="dispatch")
+class GastoListView(ListView):
     model = Gasto
+    template_name = "contabilidad/gasto_list.html"
+    context_object_name = "gastos"
+    ordering = ["-fecha"]  # usa tu campo fecha
 
-class GastoDetail(DetailView):
+@method_decorator(login_required, name="dispatch")
+class GastoCreateView(CreateView):
     model = Gasto
+    form_class = GastoForm
+    template_name = "contabilidad/gasto_form.html"
+    success_url = reverse_lazy("contabilidad:gasto_list")
 
-class GastoCreate(CreateView):
+@method_decorator(login_required, name="dispatch")
+class GastoUpdateView(UpdateView):
     model = Gasto
-    fields = ['descripcion', 'monto', 'categoria']
-    success_url = reverse_lazy('gasto_list')
+    form_class = GastoForm
+    template_name = "contabilidad/gasto_form.html"
+    success_url = reverse_lazy("contabilidad:gasto_list")
 
-class GastoUpdate(UpdateView):
-    model = Gasto
-    fields = ['descripcion', 'monto', 'categoria']
-    success_url = reverse_lazy('gasto_list')
 
-class GastoDelete(DeleteView):
-    model = Gasto
-    success_url = reverse_lazy('gasto_list')
-
-# SistemaCaja CRUD
-class SistemaCajaList(ListView):
+@method_decorator(login_required, name="dispatch")
+class CajaListView(ListView):
     model = SistemaCaja
+    template_name = "contabilidad/caja_list.html"
+    context_object_name = "cajas"
+    ordering = ["-fecha_apertura"]
 
-class SistemaCajaDetail(DetailView):
+
+@method_decorator(login_required, name="dispatch")
+class CajaUpdateView(UpdateView):
     model = SistemaCaja
+    form_class = SistemaCajaForm
+    template_name = "contabilidad/caja_form.html"
+    success_url = reverse_lazy("contabilidad:caja_list")
 
-class SistemaCajaCreate(CreateView):
-    model = SistemaCaja
-    fields = ['saldo_inicial', 'saldo_actual', 'cuenta_bancaria', 'saldo_bancario', 'estado']
-    success_url = reverse_lazy('sistemacaja_list')
 
-class SistemaCajaUpdate(UpdateView):
-    model = SistemaCaja
-    fields = ['saldo_inicial', 'saldo_actual', 'cuenta_bancaria', 'saldo_bancario', 'estado']
-    success_url = reverse_lazy('sistemacaja_list')
-
-class SistemaCajaDelete(DeleteView):
-    model = SistemaCaja
-    success_url = reverse_lazy('sistemacaja_list')
-
-# Inversor CRUD
-class InversorList(ListView):
+@method_decorator(login_required, name="dispatch")
+class InversorListView(ListView):
     model = Inversor
+    template_name = "contabilidad/inversor_list.html"
+    context_object_name = "inversores"
+    ordering = ["nombre"]
 
-class InversorDetail(DetailView):
+
+@method_decorator(login_required, name="dispatch")
+class InversorCreateView(CreateView):
     model = Inversor
+    form_class = InversorForm
+    template_name = "contabilidad/inversor_form.html"
+    success_url = reverse_lazy("contabilidad:inversor_list")
 
-class InversorCreate(CreateView):
+
+@method_decorator(login_required, name="dispatch")
+class InversorUpdateView(UpdateView):
     model = Inversor
-    fields = ['nombre', 'monto_invertido', 'porcentaje_retorno']
-    success_url = reverse_lazy('inversor_list')
+    form_class = InversorForm
+    template_name = "contabilidad/inversor_form.html"
+    success_url = reverse_lazy("contabilidad:inversor_list")
 
-class InversorUpdate(UpdateView):
-    model = Inversor
-    fields = ['nombre', 'monto_invertido', 'porcentaje_retorno']
-    success_url = reverse_lazy('inversor_list')
 
-class InversorDelete(DeleteView):
-    model = Inversor
-    success_url = reverse_lazy('inversor_list')
-
-# DetalleInversion CRUD
-class DetalleInversionList(ListView):
+@method_decorator(login_required, name="dispatch")
+class DetalleInversionListView(ListView):
     model = DetalleInversion
+    template_name = "contabilidad/inversion_list.html"
+    context_object_name = "inversiones"
+    ordering = ["-fecha"]
 
-class DetalleInversionDetail(DetailView):
+
+@method_decorator(login_required, name="dispatch")
+class DetalleInversionCreateView(CreateView):
     model = DetalleInversion
+    form_class = DetalleInversionForm
+    template_name = "contabilidad/inversion_form.html"
+    success_url = reverse_lazy("contabilidad:inversion_list")
 
-class DetalleInversionCreate(CreateView):
+
+@method_decorator(login_required, name="dispatch")
+class DetalleInversionUpdateView(UpdateView):
     model = DetalleInversion
-    fields = ['inversor', 'monto', 'tipo_pago', 'tipo_movimiento']
-    success_url = reverse_lazy('detalleinversion_list')
-
-class DetalleInversionUpdate(UpdateView):
-    model = DetalleInversion
-    fields = ['inversor', 'monto', 'tipo_pago', 'tipo_movimiento']
-    success_url = reverse_lazy('detalleinversion_list')
-
-class DetalleInversionDelete(DeleteView):
-    model = DetalleInversion
-    success_url = reverse_lazy('detalleinversion_list')
-
-# DescuentoPromocional CRUD
-class DescuentoPromocionalList(ListView):
-    model = DescuentoPromocional
-
-class DescuentoPromocionalDetail(DetailView):
-    model = DescuentoPromocional
-
-class DescuentoPromocionalCreate(CreateView):
-    model = DescuentoPromocional
-    fields = ['codigo', 'descripcion', 'porcentaje_descuento', 'fecha_inicio', 'fecha_fin', 'activo']
-    success_url = reverse_lazy('descuentopromocional_list')
-
-class DescuentoPromocionalUpdate(UpdateView):
-    model = DescuentoPromocional
-    fields = ['codigo', 'descripcion', 'porcentaje_descuento', 'fecha_inicio', 'fecha_fin', 'activo']
-    success_url = reverse_lazy('descuentopromocional_list')
-
-class DescuentoPromocionalDelete(DeleteView):
-    model = DescuentoPromocional
-    success_url = reverse_lazy('descuentopromocional_list')
+    form_class = DetalleInversionForm
+    template_name = "contabilidad/inversion_form.html"
+    success_url = reverse_lazy("contabilidad:inversion_list")
