@@ -1,39 +1,52 @@
 from django import forms
 from django.forms import inlineformset_factory
 from .models import Compra, DetalleCompra
-
+from inventario.models import Inventario
 
 class CompraForm(forms.ModelForm):
     class Meta:
         model = Compra
-        fields = ["__all__"]
+        fields = "__all__"   # opcional: luego puedes limitar
+        widgets = {
+            "proveedor": forms.Select(attrs={"class": "form-control"}),
+            "tipo_documento": forms.Select(attrs={"class": "form-control"}),
+            "tipo_pago": forms.Select(attrs={"class": "form-control"}),
+            # agrega aquí otros campos que muestras en el form
+        }
 
 
 class DetalleCompraForm(forms.ModelForm):
     class Meta:
         model = DetalleCompra
-        fields = ["producto", "cantidad", "precio_unitario"]
+        fields = ["inventario", "cantidad", "precio_unitario"]
         widgets = {
-            "producto": forms.Select(attrs={"class": "form-control"}),
+            "inventario": forms.Select(attrs={"class": "form-control"}),
             "cantidad": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
             "precio_unitario": forms.NumberInput(attrs={"class": "form-control", "min": 0}),
         }
 
-def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Lógica condicional para producto
-        if self.instance.pk:  # Editando existente
-            self.fields["producto"].widget = forms.HiddenInput()
-            self.fields["producto"].initial = self.instance.producto_id  # Solo ID
-        else:  # permite seleccionar o escribir nuevo
-            self.fields["producto"].widget = forms.TextInput(attrs={"class": "form-control"})
-            
+        # Opcional: filtrar solo productos activos
+        self.fields["inventario"].queryset = (
+            Inventario.objects
+            .select_related("producto")
+            .filter(producto__activo=True)
+            .order_by("producto__nombre")
+        )
+
+        # Si estás editando un detalle existente, no permitas cambiar el producto
+        if self.instance.pk:
+            self.fields["inventario"].widget = forms.HiddenInput()
+        else:
+            self.fields["inventario"].widget = forms.Select(attrs={"class": "form-control"})
+
 
 
 DetalleCompraFormSet = inlineformset_factory(
     parent_model=Compra,
     model=DetalleCompra,
-    form=DetalleCompraForm, #aqui se asigna el formulario personalizado
+    form=DetalleCompraForm,
     extra=5,
     can_delete=True,
 )

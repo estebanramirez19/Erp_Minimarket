@@ -24,6 +24,7 @@ TIPO_DOCUMENTO_CHOICES = [
 ]
 
 class Venta(models.Model):
+    folio = models.CharField(max_length=20, unique=True, blank=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)
     vendedor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -59,9 +60,16 @@ class DetalleVenta(models.Model):
     @property
     def subtotal(self):
         return self.precio_unitario * self.cantidad
-    
+
     def __str__(self):
-        return f"Venta {self.venta.id} Codigo: {self.inventario.producto.id} | Producto: {self.inventario.producto.nombre} | Cantidad: {self.inventario.cantidad} | Precio Unitario: ${self.inventario.producto.precio_venta} | Subtotal: ${self.subtotal}"
+        return (
+            f"Venta {self.venta.id} | "
+            f"Codigo: {self.inventario.producto.id} | "
+            f"Producto: {self.inventario.producto.nombre} | "
+            f"Cantidad: {self.cantidad} | "
+            f"Precio Unitario: ${self.precio_unitario} | "
+            f"Subtotal: ${self.subtotal}"
+        )
 
 
 class FolioCounter(models.Model):

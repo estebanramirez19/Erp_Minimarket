@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 
-from erp_project.compras import models
+from compras.models import Compra, DetalleCompra, models 
+
 from .models import Producto, Inventario
 from .forms import ProductoForm
 from .forms import CategoriaProductoForm

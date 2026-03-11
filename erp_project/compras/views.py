@@ -54,7 +54,7 @@ def buscar_productos(request):
 def compra_crear(request):
     if request.method == "POST":
         compra_form = CompraForm(request.POST, request.FILES)
-        formset = DetalleCompraFormSet(request.POST, prefix="Detalle Compra")
+        formset = DetalleCompraFormSet(request.POST, prefix="Detalles")
 
         if compra_form.is_valid() and formset.is_valid():
             compra = compra_form.save(commit=False)

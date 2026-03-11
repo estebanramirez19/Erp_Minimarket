@@ -91,26 +91,26 @@ def crear_venta(request): # recibe los fomularios de venta y detalle
     return render(request, "ventas/crear_venta.html", context)
 
 
- #preCIO POR PESO
-def precio_por_peso(request, venta_id):
-    venta = get_object_or_404(Venta, id=venta_id)
-    if request.method == 'POST':
-        producto_id = request.POST.get('producto')
-        peso = float(request.POST.get('peso'))
-        producto = Producto.objects.get(id=producto_id)
-        DetalleVenta.objects.create(
-            venta=venta,
-            producto=producto,
-            cantidad=peso,
-            precio_unitario=producto.precio_venta
-        )
-        inventario = Inventario.objects.get(producto=producto)
-        inventario.cantidad -= peso
-        inventario.save()
-        messages.success(request, f"Producto {producto.nombre} agregado por peso ({peso}kg).")
-        return redirect('ventas:detalle_venta', venta_id=venta.id)
-    productos = Producto.objects.filter(activo=True)
-    return render(request, 'ventas/precio_por_peso.html', {'venta': venta, 'productos': productos})
+#  #preCIO POR PESO
+# # def precio_por_peso(request, venta_id):
+#     venta = get_object_or_404(Venta, id=venta_id)
+#     if request.method == 'POST':
+#         producto_id = request.POST.get('producto')
+#         peso = float(request.POST.get('peso'))
+#         producto = Producto.objects.get(id=producto_id)
+#         DetalleVenta.objects.create(
+#             venta=venta,
+#             producto=producto,
+#             cantidad=peso,
+#             precio_unitario=producto.precio_venta
+#         )
+#         inventario = Inventario.objects.get(producto=producto)
+#         inventario.cantidad -= peso
+#         inventario.save()
+#         messages.success(request, f"Producto {producto.nombre} agregado por peso ({peso}kg).")
+#         return redirect('ventas:detalle_venta', venta_id=venta.id)
+#     productos = Producto.objects.filter(activo=True)
+#     return render(request, 'ventas/precio_por_peso.html', {'venta': venta, 'productos': productos})
 
 # HISTORIAL DE VENTAS (solo admin)
 @login_required
