@@ -12,7 +12,7 @@ urlpatterns = [
     path("historial/", views.historial_ventas, name="historial_ventas"),
 
     # Lista de ventas (pantalla principal)
-    path("/", views.lista_ventas, name="lista_ventas"),
+    path(" ", views.lista_ventas, name="lista_ventas"),
 
     # Editar venta
     path("editar/<int:venta_id>/", views.editar_venta, name="editar_venta"),

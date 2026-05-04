@@ -15,8 +15,8 @@ class SistemaCajaForm(forms.ModelForm):
         fields = [
             "saldo_inicial",
             "saldo_actual",
-            "Ingreso",
-            "Egreso",
+            "ingreso",
+            "egreso",
             "cuenta_bancaria",
             "saldo_bancario",
             "estado",

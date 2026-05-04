@@ -43,7 +43,7 @@ class SistemaCaja(models.Model):
     
 class Inversor(models.Model): #para registrar a los inversores, sus aportes y retornos
     nombre = models.CharField(max_length=100)
-    rut = models.CharField(max_length=12, unique=True)
+    rut = models.CharField(max_length=12, unique=True, null=True, blank=True)
     telefono = models.CharField(max_length=20, blank=True)
     correo = models.EmailField(blank=True)
 

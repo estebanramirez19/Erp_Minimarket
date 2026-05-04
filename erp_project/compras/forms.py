@@ -6,12 +6,12 @@ from inventario.models import Inventario
 class CompraForm(forms.ModelForm):
     class Meta:
         model = Compra
-        fields = "__all__"   # opcional: luego puedes limitar
+        fields = "__all__"  
         widgets = {
             "proveedor": forms.Select(attrs={"class": "form-control"}),
             "tipo_documento": forms.Select(attrs={"class": "form-control"}),
-            "tipo_pago": forms.Select(attrs={"class": "form-control"}),
-            # agrega aquí otros campos que muestras en el form
+            "metodo_pago": forms.Select(attrs={"class": "form-control"}),
+            
         }
 
 

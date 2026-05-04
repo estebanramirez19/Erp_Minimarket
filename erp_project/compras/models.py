@@ -114,6 +114,14 @@ class DetalleCompra(models.Model):
         Inventario,
         on_delete=models.PROTECT,
         related_name="detalles_compra",
+        null=True,
+        blank=True, 
+    )
+    cantidad = models.PositiveIntegerField(default=1)                         
+    precio_unitario = models.DecimalField(                                     
+        max_digits=12,
+        decimal_places=0,
+        default=0
     )
 
     @property
@@ -121,4 +129,10 @@ class DetalleCompra(models.Model):
         return self.inventario.producto.precio_compra * self.inventario.cantidad
 
     def __str__(self):
-        return f"Codigo: {self.producto.id} | Producto: {self.producto.nombre} | Cantidad: {self.inventario.cantidad} | Precio Unitario: {self.inventario.producto.precio_compra} | Subtotal: {self.subtotal}"
+        nombre = self.inventario.producto.nombre
+        return (
+            f"Producto: {nombre} | "
+            f"Cantidad: {self.cantidad} | "
+            f"Precio Unitario: {self.precio_unitario} | "
+            f"Subtotal: {self.subtotal}"
+        )
