@@ -5,16 +5,17 @@ from django.db import models
 from empresa.models import Empresa
 from .models import Empresa
 from .forms import EmpresaForm
-from django.contrib.auth.decorators import login_required ,role_required
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required ,permission_required
 
-@login_required
-@role_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('empresa.view_empresa', raise_exception=True), name="dispatch")
 def empresa_view(request):
     empresa = Empresa.objects.all().first()  # Suponiendo que solo hay una empresa
     return render(request, 'empresa/empresa.html', {'empresa': empresa})
 
-@login_required
-@role_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('empresa.change_empresa', raise_exception=True), name="dispatch")
 def editar_empresa(request):
     empresa = Empresa.objects.all().first()  # Suponiendo que solo hay una empresa
     if request.method == 'POST':
@@ -29,8 +30,8 @@ def editar_empresa(request):
         form = EmpresaForm(instance=empresa)
     return render(request, 'empresa/editar_empresa.html', {'form': form})
 
-@login_required
-@role_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('empresa.delete_empresa', raise_exception=True), name="dispatch")
 def eliminar_empresa(request):
     empresa = Empresa.objects.all().first()  # Suponiendo que solo hay una empresa
     if empresa:
@@ -40,8 +41,8 @@ def eliminar_empresa(request):
         messages.error(request, 'No se encontró la empresa para eliminar.')
     return redirect('empresa:empresa')
 
-@login_required
-@role_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('empresa.add_empresa', raise_exception=True), name="dispatch")
 def crear_empresa(request):
     if request.method == 'POST':
         form = EmpresaForm(request.POST, request.FILES)

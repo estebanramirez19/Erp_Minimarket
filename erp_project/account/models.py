@@ -32,6 +32,13 @@ class UserProfile(models.Model):
     class Meta:
         verbose_name = "Perfil de Usuario"
         verbose_name_plural = "Perfiles de Usuario"
+        permissions = [
+            ("can_view_dashboard", "Puede ver el dashboard"),
+            ("can_manage_users", "Puede gestionar usuarios"),
+            ("can_manage_products", "Puede gestionar productos"),
+            ("can_manage_sales", "Puede gestionar ventas"),
+            ("can_view_reports", "Puede ver reportes"),
+        ]
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name} ({self.rol})"

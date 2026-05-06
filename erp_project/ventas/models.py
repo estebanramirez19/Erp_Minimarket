@@ -50,6 +50,13 @@ class Venta(models.Model):
 
     def __str__(self):
         return f"Venta {self.id} Folio: {self.folio} - Razon Social: {self.empresa.razon_social} - RUT: {self.empresa.rut} - Giro: {self.empresa.giro}- Direccion: {self.empresa.direccion} - Comuna: {self.empresa.comuna} - Ciudad: {self.empresa.ciudad} - Fecha: {self.fecha.strftime('%Y-%m-%d %H:%M:%S')} - Metodo de Pago: {self.tipo_pago} -SubTotal: ${self.subtotal} - IVA: ${self.iva} - Total: ${self.total}"
+    class Meta:
+        permissions = [
+            ("view_venta", "Puede ver ventas"),
+            ("add_venta", "Puede agregar ventas"),
+            ("change_venta", "Puede cambiar ventas"),
+            ("delete_venta", "Puede eliminar ventas"),
+        ]
 
 class DetalleVenta(models.Model):
     venta = models.ForeignKey(Venta, on_delete=models.CASCADE, related_name="detalles")
@@ -70,7 +77,13 @@ class DetalleVenta(models.Model):
             f"Precio Unitario: ${self.precio_unitario} | "
             f"Subtotal: ${self.subtotal}"
         )
-
+    class Meta:
+        permissions = [
+            ("view_detalleventa", "Puede ver detalles de venta"),
+            ("add_detalleventa", "Puede agregar detalles de venta"),
+            ("change_detalleventa", "Puede cambiar detalles de venta"),
+            ("delete_detalleventa", "Puede eliminar detalles de venta"),
+        ]
 
 class FolioCounter(models.Model):
     #Contador de folios por tipo de documento

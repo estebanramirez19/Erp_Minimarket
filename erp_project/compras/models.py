@@ -103,6 +103,13 @@ class Compra(models.Model):  #tiene que estar relacionada con Proveedor, inventa
     def __str__(self):
         return f"ID Compra: {self.id}- Folio: {self.folio} - Tipo de Documento: {self.tipo_documento} - Proveedor: {self.proveedor.nombre if self.proveedor else self.nombre_negocio} - Rut Proveedor: {self.proveedor.rut if self.proveedor else self.rut_negocio} - Giro: {self.proveedor.giro if self.proveedor else self.giro_negocio} - Direccion: {self.proveedor.direccion if self.proveedor else self.direccion_negocio}- Comuna: {self.proveedor.comuna if self.proveedor else self.comuna_negocio} - Ciudad: {self.proveedor.ciudad if self.proveedor else self.ciudad_negocio}- Fecha: {self.fecha_compra.strftime('%Y-%m-%d') if self.fecha_compra else 'N/A'} - Razon Social: {self.empresa.razon_social} - Rut: {self.empresa.rut} - Giro: {self.empresa.giro} - Direccion: {self.empresa.direccion} - Comuna: {self.empresa.comuna} - Ciudad: {self.empresa.ciudad} - Subtotal: {self.subtotal} - IVA: {self.iva} - Total: {self.total} - Metodo de Pago: {self.metodo_pago}"
 
+    class Meta:
+        permissions = [
+            ("puede_ver_compras", "Puede ver compras"),
+            ("puede_crear_compras", "Puede crear compras"),
+            ("puede_editar_compras", "Puede editar compras"),
+            ("puede_eliminar_compras", "Puede eliminar compras"),
+        ]
 
 class DetalleCompra(models.Model):
     compra = models.ForeignKey(
@@ -136,3 +143,10 @@ class DetalleCompra(models.Model):
             f"Precio Unitario: {self.precio_unitario} | "
             f"Subtotal: {self.subtotal}"
         )
+    class Meta:
+        permissions = [
+            ("puede_ver_detalles_compra", "Puede ver detalles de compra"),
+            ("puede_crear_detalles_compra", "Puede crear detalles de compra"),
+            ("puede_editar_detalles_compra", "Puede editar detalles de compra"),
+            ("puede_eliminar_detalles_compra", "Puede eliminar detalles de compra"),
+        ]

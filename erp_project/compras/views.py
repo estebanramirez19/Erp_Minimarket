@@ -2,7 +2,8 @@ from decimal import Decimal
 from contabilidad.models import SistemaCaja
 from django import db
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, role_required
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required ,permission_required
 from django.db import transaction, models
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -17,8 +18,8 @@ from django.core.exceptions import ValidationError
 
 
 # === BÚSQUEDA AJAX DE PRODUCTOS ===
-@login_required 
-@role_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('compras.view_producto', raise_exception=True), name="dispatch")
 def buscar_productos(request):
     q = request.GET.get("q", "").strip()
     results = []
@@ -50,8 +51,8 @@ def buscar_productos(request):
 
 
 # === CREAR COMPRA + DETALLES ===
-@login_required 
-@role_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('compras.add_compra', raise_exception=True), name="dispatch")
 @transaction.atomic
 def compra_crear(request):
     if request.method == "POST":
@@ -124,8 +125,8 @@ def compra_crear(request):
 
 
 # === LISTA DE COMPRAS ===
-@login_required
-@role_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('compras.view_compra', raise_exception=True), name="dispatch")
 def lista_compras(request):
     compras = Compra.objects.all().order_by("-fecha_compra", "-id")
     return render(
@@ -136,8 +137,8 @@ def lista_compras(request):
 
 
 # === DETALLE DE COMPRA ===
-@login_required 
-@role_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('compras.view_compra', raise_exception=True), name="dispatch")
 def detalle_compra(request, compra_id):
     compra = get_object_or_404(
         Compra.objects.select_related("proveedor", "usuario"),
@@ -160,8 +161,8 @@ def detalle_compra(request, compra_id):
 
 
 # === EDITAR COMPRA (placeholder para implementar luego) ===
-@login_required 
-@role_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('compras.change_compra', raise_exception=True), name="dispatch")
 @transaction.atomic
 def editar_compra(request, compra_id):
     compra = get_object_or_404(Compra, id=compra_id)
@@ -211,8 +212,8 @@ def editar_compra(request, compra_id):
 
 
 # === ELIMINAR COMPRA ===
-@login_required 
-@role_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('compras.delete_compra', raise_exception=True), name="dispatch")
 @transaction.atomic
 def eliminar_compra(request, compra_id):
     compra = get_object_or_404(Compra, id=compra_id)

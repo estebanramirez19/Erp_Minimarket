@@ -8,3 +8,11 @@ class Proveedor(models.Model):
     email = models.EmailField()
     telefono = models.CharField(max_length=15)
     activo = models.BooleanField(default=True)
+
+    class Meta:
+        permissions = [
+            ("view_proveedor", "Puede ver proveedores"),
+            ("add_proveedor", "Puede agregar proveedores"),
+            ("change_proveedor", "Puede cambiar proveedores"),
+            ("delete_proveedor", "Puede eliminar proveedores"),
+        ]

@@ -7,14 +7,16 @@ from .models import Producto, Inventario
 from .forms import ProductoForm
 from .forms import CategoriaProductoForm
 from .models import CategoriaProducto
-from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required ,permission_required
+
 from django.views.generic import ListView
 
 from .models import Inventario, CategoriaProducto
 
 
 @method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('inventario.view_inventario', raise_exception=True), name="dispatch")
 class InventarioListView(ListView):
     model = Inventario
     template_name = "inventario/productos.html"
@@ -57,12 +59,16 @@ class InventarioListView(ListView):
         context["categoria_selected"] = self.request.GET.get("categoria", "")
         context["order"] = self.request.GET.get("order", "")
         return context
-
+    
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('inventario.delete_producto', raise_exception=True), name="dispatch")
 def eliminar_producto(request, producto_id): #se queda
     producto = get_object_or_404(Producto, id=producto_id)
     producto.delete()
     return redirect('inventario:datos_producto')
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('inventario.change_producto', raise_exception=True), name="dispatch")
 def editar_producto(request, producto_id): #se queda
     producto = get_object_or_404(Producto, id=producto_id)
     formulario = ProductoForm(request.POST or None, request.FILES or None, instance=producto)
@@ -71,6 +77,8 @@ def editar_producto(request, producto_id): #se queda
         return redirect('inventario:datos_producto')
     return render(request, "inventario/editar_producto.html", {"formulario": formulario})
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('inventario.add_producto', raise_exception=True), name="dispatch")
 def crear_productos(request):  #se queda
     formulario = ProductoForm(request.POST, request.FILES or None)
     if request.method == "POST" and formulario.is_valid():
@@ -78,6 +86,8 @@ def crear_productos(request):  #se queda
         return redirect('inventario:datos_producto')
     return render(request, "inventario/crear_producto.html", {"formulario": formulario})
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('inventario.add_categoriaproducto', raise_exception=True), name="dispatch")
 def crear_categoria(request): # se queda
     formulario = CategoriaProductoForm(request.POST or None)
     if request.method == "POST" and formulario.is_valid():

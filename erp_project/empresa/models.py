@@ -17,3 +17,10 @@ class Empresa(models.Model):
     fecha_fundacion = models.DateField(null=True, blank=True, help_text="Fecha de fundación de la empresa")
     numero_empleados = models.IntegerField(null=True, blank=True, help_text="Número de empleados de la empresa")
 
+    class Meta:
+        permissions = [
+            ("view_empresa", "Can view empresa"),
+            ("add_empresa", "Can add empresa"),
+            ("change_empresa", "Can change empresa"),
+            ("delete_empresa", "Can delete empresa"),
+        ]

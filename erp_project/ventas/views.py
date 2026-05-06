@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from .models import Venta, DetalleVenta, FolioCounter, Pago  # Descuento
 from .forms import DetalleVentaFormSet, VentaForm, DetalleVentaForm  # DescuentoForm
 from inventario.models import Producto, Inventario
@@ -14,7 +15,8 @@ from contabilidad.models import SistemaCaja
 
 #Solo hare a view de crear venta pero bien hecha
 
-@login_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('ventas.add_venta', raise_exception=True), name="dispatch")
 @transaction.atomic
 def crear_venta(request): # recibe los fomularios de venta y detalle 
     if request.method == 'POST':
@@ -113,18 +115,22 @@ def crear_venta(request): # recibe los fomularios de venta y detalle
 #     return render(request, 'ventas/precio_por_peso.html', {'venta': venta, 'productos': productos})
 
 # HISTORIAL DE VENTAS (solo admin)
-@login_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('ventas.view_venta', raise_exception=True), name="dispatch")
 def historial_ventas(request):
     ventas = Venta.objects.all().order_by('-fecha')
     return render(request, 'ventas/historial_ventas.html', {'ventas': ventas})
 
 # LISTA DE VENTAS (para pantalla principal)
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('ventas.view_venta', raise_exception=True), name="dispatch")
 def lista_ventas(request):
     ventas = Venta.objects.all().order_by('-fecha')
     return render(request, 'ventas/lista_ventas.html', {'ventas': ventas})
 
 # EDITAR VENTA (solo admin)
-@login_required
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('ventas.change_venta', raise_exception=True), name="dispatch")
 def editar_venta(request, venta_id):
     venta = get_object_or_404(Venta, id=venta_id)
     if request.method == 'POST':
