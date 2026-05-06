@@ -7,3 +7,11 @@ class Cliente(models.Model):
     direccion = models.CharField(max_length=200)
     telefono = models.CharField(max_length=15, blank=True)
     activo = models.BooleanField(default=True)
+
+    class Meta:
+        permissions = [
+            ("view_cliente", "Puede ver clientes"),
+            ("add_cliente", "Puede agregar clientes"),
+            ("change_cliente", "Puede cambiar clientes"),
+            ("delete_cliente", "Puede eliminar clientes"),
+        ]

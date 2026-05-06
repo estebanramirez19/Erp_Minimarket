@@ -5,11 +5,16 @@ from django.db import models
 from empresa.models import Empresa
 from .models import Empresa
 from .forms import EmpresaForm
+from django.contrib.auth.decorators import login_required ,role_required
 
+@login_required
+@role_required
 def empresa_view(request):
     empresa = Empresa.objects.all().first()  # Suponiendo que solo hay una empresa
     return render(request, 'empresa/empresa.html', {'empresa': empresa})
 
+@login_required
+@role_required
 def editar_empresa(request):
     empresa = Empresa.objects.all().first()  # Suponiendo que solo hay una empresa
     if request.method == 'POST':
@@ -24,6 +29,8 @@ def editar_empresa(request):
         form = EmpresaForm(instance=empresa)
     return render(request, 'empresa/editar_empresa.html', {'form': form})
 
+@login_required
+@role_required
 def eliminar_empresa(request):
     empresa = Empresa.objects.all().first()  # Suponiendo que solo hay una empresa
     if empresa:
@@ -33,6 +40,8 @@ def eliminar_empresa(request):
         messages.error(request, 'No se encontró la empresa para eliminar.')
     return redirect('empresa:empresa')
 
+@login_required
+@role_required
 def crear_empresa(request):
     if request.method == 'POST':
         form = EmpresaForm(request.POST, request.FILES)
