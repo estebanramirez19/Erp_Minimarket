@@ -21,7 +21,12 @@
     </head>
 
     <body>
-        <!-- NAVBAR MEJORADA -->
+        <!-- NAVBAR  -->
+        {% if user.is_authenticated %}
+        {% end if %}
+
+        
+        <!--  {% perms. %} para empezar a aplicar permisos dependiendo del tipo de usuario -->
         <nav class="navbar navbar-expand-lg navbar-light sticky-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{% url 'inicio' %}">

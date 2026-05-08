@@ -5,13 +5,7 @@ class CategoriaProducto(models.Model):
 
     def __str__(self):
         return self.nombre
-    class Meta:
-        permissions = [
-            ("view_categoriaproducto", "Puede ver categorías de productos"),
-            ("add_categoriaproducto", "Puede agregar categorías de productos"),
-            ("change_categoriaproducto", "Puede cambiar categorías de productos"),
-            ("delete_categoriaproducto", "Puede eliminar categorías de productos"),
-        ]
+    pass
 
 
 class Producto(models.Model):
@@ -26,13 +20,7 @@ class Producto(models.Model):
 
     def __str__(self):
         return f"{self.nombre} - {self.categoria.nombre} - Precio Venta: {self.precio_venta} - Precio Compra: {self.precio_compra} - Activo: {'Sí' if self.activo else 'No'} - Código de Barra: {self.codigo_barra}"
-    class Meta:
-        permissions = [
-            ("view_producto", "Puede ver productos"),
-            ("add_producto", "Puede agregar productos"),
-            ("change_producto", "Puede cambiar productos"),
-            ("delete_producto", "Puede eliminar productos"),
-        ]
+    pass
 
 class Inventario(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
@@ -41,13 +29,7 @@ class Inventario(models.Model):
 
     def __str__(self):
         return f"Inventario de {self.producto.nombre} - Cantidad: {self.cantidad} - Última actualización: {self.fecha_actualizacion.strftime('%Y-%m-%d %H:%M:%S')}"
-    class Meta:
-        permissions = [
-            ("view_inventario", "Puede ver inventario"),
-            ("add_inventario", "Puede agregar inventario"),
-            ("change_inventario", "Puede cambiar inventario"),
-            ("delete_inventario", "Puede eliminar inventario"),
-        ]
+    pass
 
 class AjustesInventario(models.Model):
     inventario = models.ForeignKey(Inventario, on_delete=models.CASCADE)
@@ -70,10 +52,4 @@ class AjustesInventario(models.Model):
 
     def __str__(self):
         return f"Ajuste {self.motivo} - {self.descripcion} - {self.tipo_ajuste} - {self.inventario.producto.nombre} - {self.cantidad_ajustada} - {self.fecha.strftime('%Y-%m-%d %H:%M:%S')}"
-    class Meta:
-        permissions = [
-            ("view_ajustesinventario", "Puede ver ajustes de inventario"),
-            ("add_ajustesinventario", "Puede agregar ajustes de inventario"),
-            ("change_ajustesinventario", "Puede cambiar ajustes de inventario"),
-            ("delete_ajustesinventario", "Puede eliminar ajustes de inventario"),
-        ]
+    pass

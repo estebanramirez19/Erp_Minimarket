@@ -10,13 +10,7 @@ class Gasto(models.Model): #para gastos como cuentas de servicios, sueldos, etc.
     categoria = models.CharField(max_length=100, blank=True)
     def __str__(self):
         return f"{self.descripcion} - {self.monto}"
-    class Meta:
-        permissions = [
-            ("view_gasto", "Puede ver gastos"),
-            ("add_gasto", "Puede agregar gastos"),
-            ("change_gasto", "Puede modificar gastos"),
-            ("delete_gasto", "Puede eliminar gastos"),
-        ]
+    pass
     
 class SistemaCaja(models.Model):
     saldo_inicial = models.DecimalField(max_digits=12, decimal_places=0)
@@ -48,13 +42,7 @@ class SistemaCaja(models.Model):
     def __str__(self):
         return f"Caja - {self.estado} - Saldo Actual: {self.saldo_actual}"
     
-    class Meta:
-        permissions = [
-            ("view_sistemacaja", "Puede ver sistema de caja"),
-            ("add_sistemacaja", "Puede agregar sistema de caja"),
-            ("change_sistemacaja", "Puede modificar sistema de caja"),
-            ("delete_sistemacaja", "Puede eliminar sistema de caja"),
-        ]
+    pass
     
 class Inversor(models.Model): #para registrar a los inversores, sus aportes y retornos
     nombre = models.CharField(max_length=100)
@@ -65,13 +53,7 @@ class Inversor(models.Model): #para registrar a los inversores, sus aportes y re
     def __str__(self):
         return f"Nombre:{self.nombre} - RUT: {self.rut} - Tel: {self.telefono} - Correo: {self.correo}"
     
-    class Meta:
-        permissions = [
-            ("view_inversor", "Puede ver inversores"),
-            ("add_inversor", "Puede agregar inversores"),
-            ("change_inversor", "Puede modificar inversores"),
-            ("delete_inversor", "Puede eliminar inversores"),
-        ]
+    pass
 
 
 class DetalleInversion(models.Model):
@@ -84,13 +66,7 @@ class DetalleInversion(models.Model):
     def __str__(self):
         return f"Nombre: {self.inversor.nombre} - Monto: {self.monto} - Tipo Pago: {self.tipo_pago} - Tipo Movimiento: {self.tipo_movimiento}"
     
-    class Meta:
-        permissions = [
-            ("view_detalleinversion", "Puede ver detalles de inversión"),
-            ("add_detalleinversion", "Puede agregar detalles de inversión"),
-            ("change_detalleinversion", "Puede modificar detalles de inversión"),
-            ("delete_detalleinversion", "Puede eliminar detalles de inversión"),
-        ]
+    pass
 #    Aun no
 # class DescuentoPromocional(models.Model):
 #     para gestionar descuentos promocionales
