@@ -1,1 +1,19 @@
-agregar al navbar las apps que faltan agregando los roles de inmediato
+# usuarios
+hay que agregar la empresa dentro del usuario 
+la logica es que se cree primero un usuario con una empresa base
+y que de esta se puedan crear subcuentas 
+para evitar duplicados es mejor usar un sistema de cuentas en lugar de correos
+dejamos el correo solo para el dueño del negocio y las cuentas para los usuarios
+este usuario solo puede ser creado por el dueño o admin 
+por lo que estos son quienes entregan las credenciales a los usuarios
+
+# link de navbar
+falta aun referenciar todas las rutas a los templates correspondientes
+
+# Terminar el FrontEnd en un 90% o mas
+enfocandonos en apps que aun no cuentan con un crud basico y luego en lo estetico
+
+# mejorar la eficiencia de los formularios
+crear un formulario unico que renderice todas las apps en lo que respecta a creacion,
+edicion, eliminacion, y visualizacion, segun lo amerite.
+

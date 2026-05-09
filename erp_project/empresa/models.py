@@ -17,4 +17,5 @@ class Empresa(models.Model):
     fecha_fundacion = models.DateField(null=True, blank=True, help_text="Fecha de fundación de la empresa")
     numero_empleados = models.IntegerField(null=True, blank=True, help_text="Número de empleados de la empresa")
 
-    pass
+    def __str__(self):
+        return self.razon_social or "Empresa sin nombre"

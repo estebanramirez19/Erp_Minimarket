@@ -73,3 +73,8 @@ def profile(request):
     """Vista del perfil del usuario"""
     profile = request.user.profile
     return render(request, 'account/profile.html', {'profile': profile})
+
+@login_required(login_url='account:login')
+def change_profile(request):
+    """Vista para cambiar los datos del perfil del usuario (no implementada aún)"""
+    return HttpResponse("Funcionalidad de cambio de perfil en desarrollo")
