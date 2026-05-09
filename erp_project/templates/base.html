@@ -22,11 +22,6 @@
 
     <body>
         <!-- NAVBAR  -->
-        {% if user.is_authenticated %}
-        
-        {% end if %}
-
-        
         <!--  {% perms. %} para empezar a aplicar permisos dependiendo del tipo de usuario -->
         <nav class="navbar navbar-expand-lg navbar-light sticky-top">
             <div class="container-fluid">
@@ -36,44 +31,57 @@
                 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
                 data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        {% if user.is_authenticated %}
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+                 
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'inicio' %}">
                                 <i class="bi bi-house"></i> Inicio
                             </a>
                         </li>
+                        {% if user.is_superuser or perms.compras.view_compra or perms.compras.add_compra %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navCompras" 
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-cart"></i> Compras
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navCompras">
-                                <li><a class="dropdown-item" href="{% url 'compras:crear' %}">Nueva Compra</a></li>
-                               
-                            </ul>
+                            <i class="bi bi-cart"></i> Compras
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navCompras">
+                            {% if user.is_superuser or perms.compras.view_compra %}
+                            <li><a class="dropdown-item" href="{% url 'compras:lista_compras' %}">Listar Compras</a></li>
+                            {% endif %}
+                            {% if user.is_superuser or perms.compras.add_compra %}
+                            <li><a class="dropdown-item" href="{% url 'compras:crear' %}">Nueva Compra</a></li>
+                            {% endif %}    
+                        </ul>
                         </li>
+                        {% endif %} 
+
+                        {% if user.is_superuser or perms.ventas.view_venta or perms.ventas.add_venta %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navVentas" 
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-cash-coin"></i> Ventas
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navVentas">
-                                <li><a class="dropdown-item" href="{% url 'ventas:lista_ventas' %}">Listar Ventas</a></li>
-                                <li><a class="dropdown-item" href="{% url 'ventas:crear_venta' %}">Nueva Venta</a></li>
-                                <li><a class="dropdown-item" href="{% url 'ventas:crear_venta' %}">Editar Venta</a></li>
-                                <li><a class="dropdown-item" href="{% url 'ventas:crear_venta' %}">Eliminar Venta</a></li>
-
-                            </ul>
+                            <i class="bi bi-cash-coin"></i> Ventas
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navVentas">
+                            {% if user.is_superuser or perms.ventas.view_venta %}
+                            <li><a class="dropdown-item" href="{% url 'ventas:lista_ventas' %}">Ver Lista de Ventas</a></li>
+                            {% endif %}
+                            {% if user.is_superuser or perms.ventas.add_venta %}
+                            <li><a class="dropdown-item" href="{% url 'ventas:crear_venta' %}">Nueva Venta</a></li>
+                            {% endif %}
+                        </ul>
                         </li>
+                        {% endif %} 
+                        
+                        {% if user.is_superuser or perms.contabilidad.view_contabilidad or perms.contabilidad.add_contabilidad or perms.contabilidad.change_contabilidad or perms.contabilidad.delete_contabilidad %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navContabilidad" 
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-cash-coin"></i> Contabilidad
+                            <i class="bi bi-cash-coin"></i> Contabilidad
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navContabilidad">
                                 <li><a class="dropdown-item" href="#">Sistema de Caja</a></li>
@@ -87,20 +95,20 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navInventario" 
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-people"></i> Inventario
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navInventario">
-                                <li><a class="dropdown-item" href="#">Listar Productos</a></li>
-                                <li><a class="dropdown-item" href="#">Nuevo Producto</a></li>
-                                <li><a class="dropdown-item" href="#">Editar Producto</a></li>
-                                <li><a class="dropdown-item" href="#">Eliminar Producto</a></li>
-                            </ul>
-                        </li>
-                        
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navProveedores" 
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-people"></i> Proveedores
+                            <i class="bi bi-people"></i> Inventario
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navInventario">
+                            <li><a class="dropdown-item" href="#">Listar Productos</a></li>
+                            <li><a class="dropdown-item" href="#">Nuevo Producto</a></li>
+                            <li><a class="dropdown-item" href="#">Editar Producto</a></li>
+                            <li><a class="dropdown-item" href="#">Eliminar Producto</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navProveedores" 
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-people"></i> Proveedores
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navProveedores">
                                 <li><a class="dropdown-item" href="#">Listar Proveedores</a></li>
@@ -109,50 +117,51 @@
                                 <li><a class="dropdown-item" href="#">Eliminar Proveedor</a></li>
                             </ul>
                         </li>
-
+                        
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navUser" 
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle"></i> {{ user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navUser">
-                                <li><a class="dropdown-item" href="{% url 'account:profile' %}">Perfil</a></li>
-                                <li><a class="dropdown-item" href="{% url 'account:logout' %}">Cerrar sesión</a></li>
-                            </ul>
-                        </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account:login' %}">Acceder</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account:register' %}">Registrarse</a>
-                        </li>
-                        {% endif %}
-
-                        <li class="nav-item ms-2">
-                            <button class="theme-toggle btn btn-sm" id="theme-toggle-btn" title="Cambiar tema">
-                                <i class="bi bi-moon"></i>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
+                            <i class="bi bi-person-circle"></i> {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navUser">
+                            <li><a class="dropdown-item" href="{% url 'account:profile' %}">Perfil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account:logout' %}">Cerrar sesión</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account:login' %}">Acceder</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account:register' %}">Registrarse</a>
+                    </li>
+                    {% endif %}
+                    
+                    <li class="nav-item ms-2">
+                        <button class="theme-toggle btn btn-sm" id="theme-toggle-btn" title="Cambiar tema">
+                            <i class="bi bi-moon"></i>
+                        </button>
+                    </li>
+                </ul>
             </div>
-        </nav>
-
-        <!-- CONTENIDO PRINCIPAL -->
-        <main class="py-4">
-            <div class="container-lg">
-                {% if messages %}
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            {% for message in messages %}
-                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                    <i class="bi bi-check-circle"></i>
-                                    {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            {% endfor %}
-                        </div>
+        </div>
+    </nav>
+    
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="py-4">
+        <div class="container-lg">
+            {% if messages %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                </div>
                     </div>
                 {% endif %}
                 
