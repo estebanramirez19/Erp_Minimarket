@@ -16,6 +16,8 @@
         <link rel="stylesheet" href="{% static 'global.css' %}">
         <link rel="stylesheet" href="{% static 'css/compras.css' %}">
         <link rel="stylesheet" href="{% static 'css/ventas.css' %}">
+        <link rel="stylesheet" href="{% static 'CSS/base.css' %}">
+
          
         {% block extra_css %}{% endblock %}
     </head>
@@ -25,9 +27,15 @@
         <!--  {% perms. %} para empezar a aplicar permisos dependiendo del tipo de usuario -->
         <nav class="navbar navbar-expand-lg navbar-light sticky-top">
             <div class="container-fluid">
+                {% if user.is_authenticated %}
                 <a class="navbar-brand" href="{% url 'inicio' %}">
                     <i class="bi bi-briefcase"></i> MinimarketOnline.cl
                 </a>
+                {% else %}
+                <a class="navbar-brand" href="{% url 'home_page' %}">
+                    <i class="bi bi-briefcase"></i> MinimarketOnline.cl
+                </a>
+                {% endif %}
                 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
                 data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,12 +45,22 @@
                  
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
+                        {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'inicio' %}">
                                 <i class="bi bi-house"></i> Inicio
                             </a>
                         </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'home_page' %}">
+                                <i class="bi bi-house"></i> Inicio
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% if user.is_authenticated %}
+
                         {% if user.is_superuser or perms.compras.view_compra or perms.compras.add_compra %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navCompras" 
@@ -77,44 +95,122 @@
                         </li>
                         {% endif %} 
                         
-                        {% if user.is_superuser or perms.contabilidad.view_contabilidad or perms.contabilidad.add_contabilidad or perms.contabilidad.change_contabilidad or perms.contabilidad.delete_contabilidad %}
+                        {% if user.is_superuser
+                            or perms.contabilidad.view_sistemacaja
+                            or perms.contabilidad.add_sistemacaja    
+                            or perms.contabilidad.view_gasto
+                            or perms.contabilidad.add_gasto            
+                            or perms.contabilidad.view_inversor
+                            or perms.contabilidad.add_inversor
+                        %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navContabilidad" 
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-cash-coin"></i> Contabilidad
+                                <i class="bi bi-cash-coin"></i> Contabilidad
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navContabilidad">
-                                <li><a class="dropdown-item" href="#">Sistema de Caja</a></li>
-                                <li><a class="dropdown-item" href="#">Descuentos</a></li>
-                                <li><a class="dropdown-item" href="#">Gastos</a></li>
-                                <li><a class="dropdown-item" href="#">Inversores</a></li>
-                                <li><a class="dropdown-item" href="#">Detalles</a></li>     
+
+                                <!-- SISTEMA DE CAJA -->
+                                {% if user.is_superuser or perms.contabilidad.view_sistemacaja or perms.contabilidad.add_sistemacaja %}
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#">
+                                        <i class="bi bi-cash-stack"></i> Sistema de Caja
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        {% if user.is_superuser or perms.contabilidad.view_sistemacaja %}
+                                        <li><a class="dropdown-item" href="#">Ver Caja</a></li>
+                                        {% endif %}
+                                        {% if user.is_superuser or perms.contabilidad.add_sistemacaja %}
+                                        <li><a class="dropdown-item" href="#">Agregar Transacción</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                                {% endif %}
+
+                                <li><hr class="dropdown-divider"></li>
+
+                                <!-- GASTOS -->
+                                {% if user.is_superuser or perms.contabilidad.view_gasto or perms.contabilidad.add_gasto %}
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#">
+                                        <i class="bi bi-receipt"></i> Gastos
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        {% if user.is_superuser or perms.contabilidad.add_gasto %}
+                                            <li><a class="dropdown-item" href="#">Agregar Gasto</a></li>
+                                        {% endif %}
+                                        {% if user.is_superuser or perms.contabilidad.view_gasto %}
+                                            <li><a class="dropdown-item" href="#">Ver Gastos</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                                {% endif %}
+
+                                <li><hr class="dropdown-divider"></li>
+
+                                <!-- INVERSORES -->
+                                {% if user.is_superuser or perms.contabilidad.view_inversor or perms.contabilidad.add_inversor %}
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#">
+                                        <i class="bi bi-graph-up-arrow"></i> Inversores
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        {% if user.is_superuser or perms.contabilidad.add_inversor %}
+                                            <li><a class="dropdown-item" href="#">Agregar Inversor</a></li>
+                                        {% endif %}
+                                        {% if user.is_superuser or perms.contabilidad.view_inversor %}
+                                            <li><a class="dropdown-item" href="#">Ver Inversores</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                                {% endif %}
+
                             </ul>
                         </li>
                         
+                        {% if user.is_superuser 
+                            or perms.inventario.view_producto
+                            or perms.inventario.add_producto
+                            or perms.inventario.view_ajustesinventario
+                            or perms.inventario.add_ajustesinventario
+                        %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navInventario" 
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-people"></i> Inventario
-                        </a>
+                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-people"></i> Inventario
+                            </a>
                         <ul class="dropdown-menu" aria-labelledby="navInventario">
-                            <li><a class="dropdown-item" href="#">Listar Productos</a></li>
-                            <li><a class="dropdown-item" href="#">Nuevo Producto</a></li>
-                            <li><a class="dropdown-item" href="#">Editar Producto</a></li>
-                            <li><a class="dropdown-item" href="#">Eliminar Producto</a></li>
+                            {% if user.is_superuser or perms.inventario.view_producto %}
+                                <li><a class="dropdown-item" href="#">Listar Productos</a></li>
+                            {% endif %}
+                            {% if user.is_superuser or perms.inventario.add_producto %}
+                                <li><a class="dropdown-item" href="#">Nuevo Producto</a></li>
+                            {% endif %}
+                            {% if user.is_superuser or perms.inventario.view_ajustesinventario %}
+                                <li><a class="dropdown-item" href="#">Ver Ajustes de inventario</a></li>
+                            {% endif %}
+                            {% if user.is_superuser or perms.inventario.add_ajustesinventario %}
+                                <li><a class="dropdown-item" href="#">Agregar Ajuste de inventario</a></li>
+                            {% endif %} 
                         </ul>
-                    </li>
-                    
-                    <li class="nav-item dropdown">
+                        </li>
+                        {% endif %}
+                        
+                        {% if user.is_superuser 
+                            or perms.proveedores.view_proveedor 
+                            or perms.proveedores.add_proveedor %}
+                        <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navProveedores" 
                         role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-people"></i> Proveedores
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navProveedores">
-                                <li><a class="dropdown-item" href="#">Listar Proveedores</a></li>
-                                <li><a class="dropdown-item" href="#">Nuevo Proveedor</a></li>
-                                <li><a class="dropdown-item" href="#">Editar Proveedor</a></li>
-                                <li><a class="dropdown-item" href="#">Eliminar Proveedor</a></li>
+                                {% if user.is_superuser or perms.proveedores.view_proveedor %}
+                                    <li><a class="dropdown-item" href="#">Listar Proveedores</a></li>
+                                {% endif %}
+                                {% if user.is_superuser or perms.proveedores.add_proveedor %}
+                                    <li><a class="dropdown-item" href="#">Nuevo Proveedor</a></li>
+                                {% endif %}
                             </ul>
                         </li>
                         
@@ -127,15 +223,15 @@
                             <li><a class="dropdown-item" href="{% url 'account:profile' %}">Perfil</a></li>
                             <li><a class="dropdown-item" href="{% url 'account:logout' %}">Cerrar sesión</a></li>
                         </ul>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
                         <a class="nav-link" href="{% url 'account:login' %}">Acceder</a>
-                    </li>
-                    <li class="nav-item">
+                        </li>
+                        <li class="nav-item">
                         <a class="nav-link" href="{% url 'account:register' %}">Registrarse</a>
-                    </li>
-                    {% endif %}
+                        </li>
+                        {% endif %}
                     
                     <li class="nav-item ms-2">
                         <button class="theme-toggle btn btn-sm" id="theme-toggle-btn" title="Cambiar tema">

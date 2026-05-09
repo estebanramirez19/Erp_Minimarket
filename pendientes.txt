@@ -1,0 +1,1 @@
+agregar al navbar las apps que faltan agregando los roles de inmediato
