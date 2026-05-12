@@ -1,0 +1,61 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Usuarios de {{ empresa.razon_social }}{% endblock %}
+
+{% block contenido %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4>
+                        Usuarios de <strong>{{ empresa.razon_social }}</strong>
+                    </h4>
+                    <a href="{% url 'account:crear_subcuenta' %}" class="btn btn-sm btn-light">
+                        + Nuevo usuario
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if usuarios %}
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Nombre</th>
+                                        <th>Rol</th>
+                                        <th>Activo</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for up in usuarios %}
+                                        <tr>
+                                            <td>{{ up.user.username }}</td>
+                                            <td>{{ up.user.get_full_name|default:up.user.username }}</td>
+                                            <td>{{ up.get_rol_display }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ up.activo|yesno:'success,danger' }}">
+                                                    {{ up.activo|yesno:'Sí,No' }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'account:profile' %}" class="btn btn-sm btn-outline-info">
+                                                    Perfil
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No hay usuarios vinculados aún.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

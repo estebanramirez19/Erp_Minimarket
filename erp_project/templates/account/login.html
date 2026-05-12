@@ -1,33 +1,64 @@
+
 {% extends "base.html" %}
-{% block title %}Log-in{% endblock %}
-<div class="columns">
+
+{% block title %}Iniciar sesión{% endblock %}
+
 {% block contenido %}
-  <div class="column is-half">
-    <h1 class="is-size-3 mt-3">Log-in</h1>
-    {% if form.errors %}
-      <p class="is-size-5">
-        Your username and password didn't match.
-        Please try again.
-      </p>
-    {% else %}
-      <p>
-        Please, use the following form to log-in. 
-        If you don't have an account 
-      </p>
-    {% endif %}
-    
-    <div class="login-form">
-      <form action="{% url 'account:login' %}" method="post">
-        {% load widget_tweaks %}
-        {% for field in form %}
-          {{field.label_tag}}
-          {% render_field field class+="input mt-2" %}
-        {% endfor %}
-        {% csrf_token %}
-        <input type="submit" value="Log-in" class="button mt-2">
-        <input type="hidden" name="next" value="{{ next }}" />
-      </form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Iniciar sesión</h4>
+                </div>
+                <div class="card-body">
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            El usuario y/o la contraseña no coinciden. Inténtalo nuevamente.
+                        </div>
+                    {% else %}
+                        <p class="mb-4">
+                            Usa el siguiente formulario para iniciar sesión. Si no tienes una cuenta,
+                            <a href="{% url 'account:register_owner' %}" class="text-primary">
+                                regístrate como dueño de negocio
+                            </a>.
+                        </p>
+                    {% endif %}
+
+                    <form action="{% url 'account:login' %}" method="post">
+                        {% csrf_token %}
+                        {% load widget_tweaks %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                Usuario
+                            </label>
+                            {% render_field form.username class+="form-control" %}
+                            {% if form.username.errors %}
+                                <small class="text-danger">{{ form.username.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">
+                                Contraseña
+                            </label>
+                            {% render_field form.password class+="form-control" %}
+                            {% if form.password.errors %}
+                                <small class="text-danger">{{ form.password.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                Iniciar sesión
+                            </button>
+                        </div>
+                        <input type="hidden" name="next" value="{{ next }}" />
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-  {% endblock %}
-</div>
+{% endblock %}
