@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'guardian'
     'rest_framework',
     'inventario.apps.InventarioConfig',
     'ventas',
@@ -48,6 +49,11 @@ INSTALLED_APPS = [
     'empresa',
     'widget_tweaks',
     
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'guardian.backends.ObjectPermissionBackend',
 ]
 
 MIDDLEWARE = [
