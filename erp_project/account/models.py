@@ -11,7 +11,6 @@ class UserProfile(models.Model):
         ('administrador', 'Administrador'),
         ('supervisor', 'Supervisor'),
         ('empleado', 'Empleado'),
-        ('contador', 'Contador'),
     ]
 
     user = models.OneToOneField(

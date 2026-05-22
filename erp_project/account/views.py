@@ -13,6 +13,14 @@ from .forms import (
     SubcuentaForm,
     UserRestrationForm,
 )
+
+from .perms import (
+    asignar_permisos_dueno,
+    asignar_permisos_admin,
+    asignar_permisos_supervisor,
+    asignar_permisos_empleado,
+)
+
 from .models import UserProfile
 
 
@@ -62,6 +70,8 @@ def register_owner(request):
         form = OwnerRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            empresa = user.profile.empresa
+            asignar_permisos_dueno(user, empresa)
             # Logear al dueño recién creado
             login(request, user)
             messages.success(
@@ -91,10 +101,18 @@ def crear_subcuenta(request):
     if request.method == 'POST':
         form = SubcuentaForm(request.POST)
         if form.is_valid():
+            rol = form.cleaned_data['rol']
             user = form.save(
                 empresa=perfil.empresa,
                 rol=form.cleaned_data['rol']
             )
+            empresa = perfil.empresa
+            if rol == 'administrador':
+                asignar_permisos_admin(user, empresa)
+            elif rol == 'supervisor':
+                asignar_permisos_supervisor(user, empresa)
+            elif rol == 'empleado':
+                asignar_permisos_empleado(user, empresa)
             messages.success(
                 request,
                 f'Usuario "{user.username}" creado con rol {user.profile.rol}.'
@@ -116,7 +134,7 @@ def lista_usuarios(request):
     Solo visible para dueño/admin.
     """
     perfil = request.user.profile
-    if perfil.rol not in ['owner', 'administrador']:
+    if not request.user.has_perm('account.view_users'):
         messages.error(request, 'Acceso restringido.')
         return redirect('inicio')
 
