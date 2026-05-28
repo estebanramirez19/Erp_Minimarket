@@ -43,11 +43,21 @@ class UserProfile(models.Model):
         verbose_name = "Perfil de Usuario"
         verbose_name_plural = "Perfiles de Usuario"
         permissions = [
-            ("can_view_dashboard", "Puede ver el dashboard"),
-            ("can_manage_users", "Puede gestionar usuarios"),
-            ("can_manage_products", "Puede gestionar productos"),
-            ("can_manage_sales", "Puede gestionar ventas"),
-            ("can_view_reports", "Puede ver reportes"),
+            # Dashboard y reportes
+            ("can_view_dashboard",    "Puede ver el dashboard"),
+            ("can_view_reports",      "Puede ver reportes"),
+            # Módulos
+            ("can_manage_users",      "Puede gestionar usuarios"),
+            ("can_manage_products",   "Puede gestionar productos"),
+            ("can_manage_sales",      "Puede gestionar ventas"),
+            # Usuarios
+            ("add_users",             "Puede crear usuarios"),
+            ("edit_users",            "Puede editar usuarios"),
+            ("delete_users",          "Puede eliminar/desactivar usuarios"),
+            # Dueño
+            ("add_owner",             "Puede agregar un dueño"),
+            ("edit_owner",            "Puede editar un dueño"),
+            ("delete_owner",          "Puede eliminar un dueño"),
         ]
 
     def __str__(self):

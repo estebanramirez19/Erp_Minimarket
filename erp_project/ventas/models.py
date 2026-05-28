@@ -37,7 +37,7 @@ class Venta(models.Model):
     total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 
     class Meta:
-        ordering = ["-fecha", "-id"]  # ← corregido
+        ordering = ["-fecha", "-id"]  
 
     def calcular_totales(self, guardar=True):
         subtotal = sum(det.subtotal for det in self.detalles.all())

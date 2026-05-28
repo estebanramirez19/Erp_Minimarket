@@ -28,8 +28,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
-
 INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'django.contrib.admin',
@@ -38,8 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'guardian'
     'rest_framework',
+    'guardian',
     'inventario.apps.InventarioConfig',
     'ventas',
     'compras',
@@ -48,7 +46,6 @@ INSTALLED_APPS = [
     'contabilidad',
     'empresa',
     'widget_tweaks',
-    
 ]
 
 AUTHENTICATION_BACKENDS = [
