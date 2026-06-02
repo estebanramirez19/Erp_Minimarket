@@ -53,7 +53,7 @@ def buscar_productos(request):
 # === CREAR COMPRA + DETALLES ===
 @method_decorator(login_required, name="dispatch")
 @method_decorator(permission_required('compras.add_compra', raise_exception=True), name="dispatch")
-@transaction.atomic
+@method_decorator(transaction.atomic, name="dispatch")
 def compra_crear(request):
     if request.method == "POST":
         compra_form = CompraForm(request.POST, request.FILES)
@@ -163,7 +163,7 @@ def detalle_compra(request, compra_id):
 # === EDITAR COMPRA (placeholder para implementar luego) ===
 @method_decorator(login_required, name="dispatch")
 @method_decorator(permission_required('compras.change_compra', raise_exception=True), name="dispatch")
-@transaction.atomic
+@method_decorator(transaction.atomic, name="dispatch")
 def editar_compra(request, compra_id):
     compra = get_object_or_404(Compra, id=compra_id)
 
@@ -214,7 +214,7 @@ def editar_compra(request, compra_id):
 # === ELIMINAR COMPRA ===
 @method_decorator(login_required, name="dispatch")
 @method_decorator(permission_required('compras.delete_compra', raise_exception=True), name="dispatch")
-@transaction.atomic
+@method_decorator(transaction.atomic, name="dispatch")
 def eliminar_compra(request, compra_id):
     compra = get_object_or_404(Compra, id=compra_id)
 

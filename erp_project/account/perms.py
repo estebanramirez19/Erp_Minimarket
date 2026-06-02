@@ -47,7 +47,7 @@ def asignar_permisos_dueno(user, empresa: Empresa):
     # ── EMPRESA (Guardian por objeto) ─────────────────────────────────
     assign_perm('empresa.view_empresa',   user, empresa)
     assign_perm('empresa.change_empresa', user, empresa)  # puede editar
-    # ⚠️ owner NO puede add ni delete empresa según tu tabla
+    #  owner NO puede add ni delete empresa según tu tabla
 
     # ── INVENTARIO ────────────────────────────────────────────────────
     for codename in [
@@ -64,7 +64,7 @@ def asignar_permisos_dueno(user, empresa: Empresa):
         _add_global_perm(user, codename)
 
     # ── VENTAS ────────────────────────────────────────────────────────
-    for codename in ['add_venta', 'change_venta', 'view_venta']:  # owner no puede borrar ventas
+    for codename in ['add_venta', 'change_venta', 'view_venta']:  
         _add_global_perm(user, codename)
 
     user.save()

@@ -1,7 +1,7 @@
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from .models import Venta, DetalleVenta, FolioCounter, Pago  # Descuento
 from .forms import DetalleVentaFormSet, VentaForm, DetalleVentaForm  # DescuentoForm
 from inventario.models import Producto, Inventario
@@ -17,7 +17,7 @@ from contabilidad.models import SistemaCaja
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(permission_required('ventas.add_venta', raise_exception=True), name="dispatch")
-@transaction.atomic
+@method_decorator(transaction.atomic, name="dispatch")
 def crear_venta(request): # recibe los fomularios de venta y detalle 
     if request.method == 'POST':
         venta_form = VentaForm(request.POST, request.FILES)
