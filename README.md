@@ -57,3 +57,4 @@ Incluye paneles predefinidos que presentan datos provenientes de las aplicacione
 
 ### Autor
 Desarrollado con **Django** y **Django REST Framework** como parte de un sistema integral de gestión empresarial.
+Esteban Ramirez
